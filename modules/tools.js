@@ -21,6 +21,6 @@ exports.extend = function extend(obj1, obj2) {
  * All wildcards '*' are changed into '.*' */
 exports.toRegExp = function(str) {
 	return str.replace(/\\(?![nrs])/g, '\\\\')
-			  .replace(/([-.()[\]{}$])/g, '\\$1')
+			  .replace(/([-.()[\]{}$^|+])/g, '\\$1')
 			  .replace(/\*/g, '.*');
 };

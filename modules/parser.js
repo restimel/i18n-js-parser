@@ -23,7 +23,7 @@ Parser.prototype.init = function() {
 	callerNames = '(?:' + config.parser.keys.map(tools.toRegExp).join('|') + ')';
 
 	/* match strings like "i18n('foo' + 'bar')" */
-	matcher = '\\b' + callerNames + '\\(((?:\\s*([\'"])(?:\\\\.|.)*?\\2\\s*(?:\\+(?=\\s*[\'"]))?)+)\\s*[,\\)]';
+	matcher = '(?:^|\\W)' + callerNames + '\\(((?:\\s*([\'"])(?:\\\\.|.)*?\\2\\s*(?:\\+(?=\\s*[\'"]))?)+)\\s*[,\\)]';
 	this.simpleCall = new RegExp(matcher, 'g');
 };
 
