@@ -14,19 +14,27 @@ function checkPath() {
 }
 
 function log(message) {
-	var timestamp, text;
+	var timestamp, text, hasLog;
 	
-	if (!checkPath()) {
+	hasLog = checkPath();
+	if (!hasLog && !configuration.verbose) {
 		return;
 	}
 
 	timestamp = Date.now();
 	text = '[' + timestamp + '] - ' + message + '\n';
+
+	if (configuration.verbose) {
+		console.log(text);
+	}
+	if (!hasLog) {
+		return;
+	}
 	fs.appendFile(loggerPath, text, {
 		flags: 'a',
 		defaultEncoding: 'utf8',
 		mode: parseInt('666', 8)
-	}, err => {
+	}, function(err) {
 		if (err) {
 			console.warn('Error while writing log file "' + loggerPath + '".', err);
 		}
@@ -42,7 +50,7 @@ exports.init = function() {
 		flags: 'w',
 		defaultEncoding: 'utf8',
 		mode: parseInt('666', 8)
-	}, err => {
+	}, function(err) {
 		if (err) {
 			console.warn('Error while writing log file "' + loggerPath + '".', err);
 		}

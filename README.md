@@ -59,6 +59,21 @@ If you want to use a configuration file located elsewhere add its location as ar
 
 	node main.js pages/configuration.json
 
+It is possible to use some options to configure the execution
+
+    node main.js [options] configurationFile
+
+### Options
+
+options are all optional. options syntax is
+
+    ```[-h|--help][-v|--version][(-p|--port) <port>][--verbose]```
+
+* -v (or --version): to know the current version of i18n-js-parser
+* -h (or --help): to have a quick summary of available options
+* -p (or --port): set the port of webserver (by default it uses port 8000)
+* --verbose: display also all logs in terminal
+
 ## Configuration
 
 You can create a configuration.json file at the root of the application to run it with a different configuration.
@@ -111,7 +126,7 @@ This is a json file with the following attributes. All attributes are optional, 
 
         Default value is an empty array.
 
-    * parsedFile: refers to where the file which have parsed all code files and conatins all strings extracted must written. This file is a inner-file which is read by adapter.
+    * parsedFile: refers to where the file which have parsed all code files and contains all strings extracted must written. This file is a inner-file which is read by adapter.
     example:
 
         ```javascript

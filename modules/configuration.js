@@ -117,7 +117,9 @@ configuration.readConfig = function(configPath) {
 		fileConfiguration = fs.readFileSync(configPath, {
 			encoding: 'utf8'
 		});
-	} catch(e) {}
+	} catch(e) {
+		logger.log('Cannot load file "' + configPath + '"');
+	}
 
 	if (fileConfiguration) {
 		try{
@@ -206,3 +208,6 @@ function updatePaths() {
 }
 
 module.exports = configuration;
+
+/* required after module exports to avoid cycle requirement */
+var logger = require('./logger.js');

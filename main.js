@@ -15,7 +15,7 @@ var adapter;
 
 var hasParser = true;
 
-var version = '1.0.0';
+var version = '1.0.1';
 
 /* port number */
 var serverPort = 8000;
@@ -44,6 +44,11 @@ function params(argv) {
     while (args.length) {
         arg = args.shift();
 
+        if (['-h', '--help'].indexOf(arg) !== -1) {
+            console.log(command_help());
+            process.exit(0);
+        }
+
         if (['-v', '--version'].indexOf(arg) !== -1) {
             console.log('i18n-js-parser v' + version);
             process.exit(0);
@@ -58,11 +63,29 @@ function params(argv) {
             changePort(args.shift());
         }
 
+        if (arg == '--verbose') {
+            configuration.verbose = true;
+        }
+
         // In other cases it should be the path of configuration file
         if (arg.indexOf('-') !== 0) {
             configurationPath = arg;
         }
     }
+}
+
+function command_help() {
+    var text = [
+        'syntax:',
+        '\t node main.js [-h|--help][-v|--version][(-p|--port) <port>][--verbose] <configurationFile>',
+        '',
+        '-v (or --version): to know the current version of i18n-js-parser',
+        '-h (or --help): to have a quick summary of available options',
+        '-p (or --port): set the port of webserver (by default it uses port 8000)',
+        '--verbose: display also all logs in terminal',
+    ];
+
+    return text.join('\n');
 }
 
 function changePort(port) {
