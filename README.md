@@ -12,11 +12,14 @@ Results are dictionary files which can be loaded by your i18n library (like http
 
 i18n-js-parser's mission is to ease the management of keeping i18n dictionary files up-to-date (with latest strings, without old useless sentences and keep them all translated).
 
-## Version 1.0.0
+## Version 1.0.1
 
 Current version supports
 
 * code parsing to create a dictionary
+    * support default translation (like i18n('strings'))
+    * support context translation (like i18n.context('context', strings'))
+    * support attributes translation (like i18n({string: 'strings', context: 'context'}))
 * dictionaries parsing to helps for strings translation
 * output templating for creating dictionaries in format you want
 
@@ -233,15 +236,45 @@ example:
 * output: list of output files. It describes which files must be output and how. The tag `@tag@` are defined in templates (cf above).
 example:
 
-```javascript
-{
-    output: [{
-        path: './ressources/dictionary.json',
-        format: '[@item[ITEMS](,)@]'
-    }]
-}
-```
+    ```javascript
+    {
+        output: [{
+            path: './ressources/dictionary.json',
+            format: '[@item[ITEMS](,)@]'
+        }]
+    }
+    ```
+It is possible to use preset formats:
+    * DICTIONARY: write a json in a dictionary format (see i18n-js-formater to watch difference between dictionary and data format)
+    * DATA: write a json in a data format (see i18n-js-formater to watch difference between dictionary and data format)
+    * DICTIONARY_LIST: write a json representing an array of objects. Each object are an item containing attributes key, context, labels, files.
+        * key: the key string to translate
+        * contesxt: the context (if any)
+        * labels: an object containing all languages translations (attributes are language code)
+        * files: list of all files which use this key
+    * PO: write in PO file format **Not done yet :(**
 
+It is is possible to limit preset format to only some languages by using [] (languages code should be separated by comma).
+
+example:
+
+    ```javascript
+    {
+        output: [{
+            path: './ressources/dictionary.json',
+            format: 'DICTIONARY'
+        }, {
+            path: './ressources/data_all.json',
+            format: 'DATA'
+        }, {
+            path: './ressources/data_en.json',
+            format: 'DATA[en]'
+        }, {
+            path: './ressources/data_us.json',
+            format: 'DATA[en,en-us]'
+        }]
+    }
+    ```
 ## Workflow
 
 Here is how this tool works.

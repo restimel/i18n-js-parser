@@ -45,20 +45,50 @@ function writeDictionaries(dictionary) {
 }
 
 function dataFormat(format, ctx) {
-	var obj;
+	var obj, presetFormat, languages;
 
-	switch(format) {
+	function getLng() {
+		var lng = format.match(/\[([^\]]*)\]/);
+
+		if (!lng) {
+			return null;
+		}
+
+		lng = lng[1].split(/\s*,\s*/);
+		return lng;
+	}
+
+	presetFormat = format.substr(0, format.indexOf('['));
+	logger.log('XXXXXXXXXXX: '+presetFormat + '←' + format)
+
+	switch(presetFormat) {
 		case 'DICTIONARY':
+			languages = getLng();
 			obj = ctx.ITEMS.reduce(function(dic, item) {
-				dic[item.key] = item.labels;
+				if (languages) {
+					dic[item.key] = languages.reduce(function(labels, label) {
+						if (typeof item.labels[label] !== 'undefined') {
+							labels[label] = item.labels[label];
+						}
+						return labels;
+					}, {});
+				} else {
+					dic[item.key] = item.labels;
+				}
 				return dic;
 			}, {});
 			break;
-		case 'DATA': // TODO: DATA_en DATA_fr ...
+		case 'DATA':
 			obj = {};
+			languages = getLng();
 			ctx.ITEMS.forEach(function(item) {
 				var key = item.key;
 				tools.each(item.labels, function(label, lng) {
+					if (languages) {
+						if (languages.indexOf(lng) === -1) {
+							return;
+						}
+					}
 					if (!obj[lng]) {
 						obj[lng] = {};
 					}
@@ -71,6 +101,9 @@ function dataFormat(format, ctx) {
 			obj = ctx.ITEMS;
 			break;
 		// TODO PO
+		case 'PO':
+			console.log('TODO PO files');
+			looger.log('TODO PO files');
 		default:
 			return template(format, ctx);
 	}
