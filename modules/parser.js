@@ -42,6 +42,13 @@ Parser.prototype.init = function() {
 	/* match strings like "i18n('foo' + 'bar')" */
 	matcher = '(?:^|\\W)' + callerNames + '\\(((?:\\s*([\'"])(?:\\\\.|.)*?\\2\\s*(?:\\+(?=\\s*[\'"]))?)+)\\s*[,\\)]';
 	this.simpleCall = new RegExp(matcher, 'g');
+
+	/* match strings like "i18n.c('context' + 'ctx', 'foo' + 'bar')" */
+	/* match strings like "i18n.context('context' + 'ctx', 'foo' + 'bar')" */
+	matcher = '(?:^|\\W)' + callerNames + '\.c(?:ontext)?\\(' +
+			  '((?:\\s*([\'"])(?:\\\\.|.)*?\\2\\s*(?:\\+(?=\\s*[\'"]))?)+)\\s*,' +
+			  '((?:\\s*([\'"])(?:\\\\.|.)*?\\4\\s*(?:\\+(?=\\s*[\'"]))?)+)\\s*[,\\)]';
+	this.contextCall = new RegExp(matcher, 'g');
 };
 
 Parser.prototype.findItem = function(key, context) {
@@ -108,7 +115,7 @@ Parser.prototype.parseDone = function() {
 }
 
 Parser.prototype.parseFile = function(path, content) {
-	var parse, data;
+	var parse, data, ctx;
 
 	if (this.files.indexOf(path) !== -1) {
 		return;
@@ -122,6 +129,15 @@ Parser.prototype.parseFile = function(path, content) {
 		/* extract string from multi-line data */
 		data = data.replace(extractString, '$2');
 		this.addItem(data, undefined, path);
+	}
+
+	while (parse = this.contextCall.exec(content)) {
+		ctx = parse[1];
+		data = parse[3];
+		/* extract string from multi-line data */
+		ctx = ctx.replace(extractString, '$2');
+		data = data.replace(extractString, '$2');
+		this.addItem(data, ctx, path);
 	}
 
 	this.countFile++;
