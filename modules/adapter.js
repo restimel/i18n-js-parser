@@ -4,8 +4,6 @@ var fs = require('fs');
 var tool = require('./tools.js');
 var configuration = require('./configuration.js');
 
-var configParsed = configuration.path.parsedFile;
-
 function clean(str) {
 	var cleanResult = configuration.adapter.rules.cleanResult;
 
@@ -96,7 +94,10 @@ Adapter.prototype.parseFile = function(path, ctxLabel) {
 Adapter.prototype.toFiles = function() {};
 
 Adapter.prototype.writeParsed = function() {
+	var configParsed;
+
 	if (this.reading.length === 0) {
+		configParsed = configuration.path.rawDictionary
 		fs.writeFile(configParsed, JSON.stringify(this.data), {
 			flags: 'w',
 			defaultEncoding: 'utf8',

@@ -3,8 +3,6 @@
 var fs = require('fs');
 var configuration = require('./configuration.js');
 
-var configDictionary = configuration.path.dictionary;
-
 function writer(eventEmitter) {
 	eventEmitter.addListener('save', saveDictionary);
 }
@@ -18,7 +16,7 @@ function saveDictionary(dictionary, callback) {
 		callback(e);
 	}
 
-	fs.writeFile(configDictionary, dictionary, {
+	fs.writeFile(configuration.path.dictionary, dictionary, {
 		flags: 'w',
 		defaultEncoding: 'utf8',
 		mode: parseInt('666', 8)

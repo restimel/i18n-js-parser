@@ -26,7 +26,7 @@ function server(eventEmitter, port) {
             	path = './pages/index.html';
             	break;
             case '/data/rawDictionary.json':
-                path = config.path.parsedFile;
+                path = config.path.rawDictionary;
                 if (query.parse === 'true') {
                     eventEmitter.emit('parseFiles', function(err) {
                         if (err) {

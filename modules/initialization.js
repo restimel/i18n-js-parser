@@ -70,7 +70,8 @@ exports.init = function(eventEmitter) {
 	init.eventEmitter = eventEmitter;
 
 	/* check if file exist and create it if it doesn't */
-	checkFile(configuration.path.parsedFile, '[]');
+	checkFile(configuration.path.rawDictionary, '[]');
 	checkFile(configuration.path.dictionary, '[]');
+	checkFile(configuration.path.parsedFile, '');
 };
 

@@ -5,7 +5,11 @@
 			"except": ["/lib/*"]
 		},
 		"parsedFile": "./ressources/parsed.json",
+		"rawDictionary": "./ressources/rawDictionary.json",
 		"dictionary": "./ressources/dictionary.json"
+	},
+	"parser": {
+		"keys": ["__"]
 	},
 	"templates": {
 		"item": "\"@KEY@\": {@context{CONTEXT}@ @label[LABELS](,)@}",

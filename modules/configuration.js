@@ -20,11 +20,19 @@ var configuration = {
 			/* files that contains all translations (which are not specific to one language) */
 			globals: []
 		},
-		/* The new raw file parsed and aggregated which is sent to Front-end */
+		/* The file which contains all strings extracted from code files */
 		parsedFile: './ressources/parsed.json',
+		/* The new raw file parsed and aggregated which is sent to Front-end */
+		rawDictionary: './ressources/rawDictionary.json',
 		/* The internal dictionary which contains all keys */
 		dictionary: './ressources/dictionary.json'
 	},
+	/* rules to parse files and extract key strings to translate */
+	parser: {
+		/* name used to translate strings */
+		keys: ['i18n']
+	},
+	/* rules to convert file from parser to the dictionary format */
 	adapter: {
 		rules: {
 			newItem: /\}\s*,\s*\{/,
@@ -62,6 +70,7 @@ var configuration = {
 	 *
 	 * @obj.prop@ get the property 'prop' from the objet 'obj'. obj can be either a tag either a cmd
 	 * @tag{CMD}@ display the tag only if CMD is truthy
+	 * @tag~replacement@ display the tag and apply the replacement on it. The replacement refers to an attribute defined in "replacements"
 	 */
 	templates: {
 		item: '{\"key\":\"@KEY@\"@context{CONTEXT}@,\"labels\":{@label[LABELS](,)@},\"files\":[@file[FILES](,)@]}',
@@ -131,6 +140,7 @@ function updatePaths() {
 	var k;
 
 	configuration.path.parsedFile = replace(configuration.path.parsedFile);
+	configuration.path.rawDictionary = replace(configuration.path.rawDictionary);
 	configuration.path.dictionary = replace(configuration.path.dictionary);
 
 	configuration.path.parser.files = configuration.path.parser.files.map(replace);

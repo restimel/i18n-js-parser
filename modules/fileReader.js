@@ -2,12 +2,7 @@
 
 var fs = require('fs');
 var config = require('./configuration.js');
-
-function toRegExp(str) {
-	return str.replace(/\\(?![nrs])/g, '\\\\')
-			  .replace(/([-.()[\]{}$])/g, '\\$1')
-			  .replace(/\*/g, '.*');
-}
+var tools = require('./tools.js');
 
 function FileReader(finalCallback, fileCallback) {
 	this.physicalFolders = [];
@@ -30,7 +25,7 @@ FileReader.prototype.setExclude = function(exclude) {
 		if (path instanceof RegExp) {
 			return path;
 		}
-		path = toRegExp(path);
+		path = tools.toRegExp(path);
 		path += '$';
 
 		return new RegExp(path);
@@ -98,7 +93,7 @@ FileReader.prototype.readPath = function(paths, currentPath) {
 
 		isLastDir = newPaths.length === 0;
 		startWithStar = dir.indexOf('*') === 0;
-		validPath = '^' + toRegExp(dir) + '$';
+		validPath = '^' + tools.toRegExp(dir) + '$';
 		validPath = new RegExp(validPath);
 
 		fs.readdir(currentPath, function(err, files) {

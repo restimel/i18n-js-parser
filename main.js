@@ -89,6 +89,11 @@ function runAdapter(adapter) {
         }
     }
 
+    dictionaries = configuration.path.parsedFile;
+    if (typeof dictionaries === 'string') {
+        parseFile(dictionaries);
+    }
+
     adapter.writeParsed();
 }
 

@@ -90,6 +90,7 @@ This is a json file with the following attributes. All attributes are optional, 
         Default values is an empty object.
 
         * globals: list of path for files containing all languages.
+        (note: the parsedFile (see below) is automatically added if it exists)
         example:
 
             ```javascript
@@ -102,7 +103,7 @@ This is a json file with the following attributes. All attributes are optional, 
 
         Default value is an empty array.
 
-    * parsedFile: refers to where the file which must be sent to the front-end is created and stored.
+    * parsedFile: refers to where the file which have parsed all code files and conatins all strings extracted must written. This file is a inner-file which is read by adapter.
     example:
 
         ```javascript
@@ -112,6 +113,17 @@ This is a json file with the following attributes. All attributes are optional, 
         ```
 
     Default value is "./ressources/parsed.json".
+
+    * rawDictionary: refers to where the file which must be sent to the front-end is created and stored.
+    example:
+
+        ```javascript
+        {"path": {
+            "rawDictionary": "./ressources/rawDictionary.json"
+        }}
+        ```
+
+    Default value is "./ressources/rawDictionary.json".
 
     * dictionary: refers to where the file which contains old keys and which is sent to the front-end is created and stored.
     example:
@@ -124,7 +136,11 @@ This is a json file with the following attributes. All attributes are optional, 
 
     Default value is "./ressources/dictionary.json".
 
-* adapter: This object contains all configuration related to adapter (interpreting the dictionary input).
+* parser: This object contains all configuration related to parser (its goal is to extract strings which must be translated)
+	* keys: list of all names used to call the translation function.
+	By default, its value is `['i18n']`
+
+* adapter: This object contains all configuration related to adapter (its goal is to interprete the dictionary input).
     * rules: This is an object containing all rules to read the dictionary files
 
 * replacements: This object contains all rules for replacements. A rule is an object containing 3 attributes:
