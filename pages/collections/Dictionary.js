@@ -11,11 +11,11 @@ var Dictionary = Backbone.Collection.extend({
 	save: function() {
 		this.sync('update', this, {
 			success: function() {
-				notification.success('Save done', 5000);
+				notification.success(__('Save done'), 5000);
 				this.trigger('save:success', this);
 			}.bind(this),
 			error: function(err) {
-				notification.error('Save has failed: ' + err.responseText);
+				notification.error(__('Save has failed: %s', err.responseText));
 			}
 		});
 	},
