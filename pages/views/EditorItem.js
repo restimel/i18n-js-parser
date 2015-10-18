@@ -10,7 +10,7 @@ var EditorItem = Backbone.View.extend({
 
 	initialize: function(options) {
 		this.dictionaryItem = options.dictionaryItem;
-		this.filteredDictionary = options.filteredDictionary;
+		this.fullDictionary = options.fullDictionary;
 	},
 
 	render: function() {

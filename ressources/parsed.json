@@ -46,5 +46,13 @@
 	{
 		"key": "an existing sentence",
 		"files": ["inAfile.js"]
+	},
+	{
+		"key": "a complete different sentence comparing to others",
+		"files": [],
+		"labels": {
+			"en": "cool!",
+			"fr": "Du français!"
+		}
 	}
 ]

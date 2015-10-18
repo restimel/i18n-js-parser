@@ -39,7 +39,7 @@ var DictionaryItem = Backbone.Model.extend({
 	},
 
 	autoFill: function(field, withField) {
-		var value;
+		var value, label, item;
 
 		if (this.get('labels')[field]) {
 			return false;
@@ -47,11 +47,22 @@ var DictionaryItem = Backbone.Model.extend({
 
 		if (withField === 'key-value') {
 			value = this.get('key');
+
 		} else if (withField.indexOf('lbl-') === 0) {
-			value = this.get('labels')[withField.substr(4)];
+			label = withField.substr(4);
+			value = this.get('labels')[label];
+
+		} else if (withField.indexOf('same-') === 0) {
+			item = fullDictionary.getClose(this) [0];
+			label = withField.substr(5);
+			if (item) {
+				value = item.get('labels')[label];
+			}
 		}
 
-		this.get('labels')[field] = value;
+		if (value) {
+			this.get('labels')[field] = value;
+		}
 
 		return value;
 	}

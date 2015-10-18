@@ -25,7 +25,8 @@ var search = new Search({
 	filteredDictionary: filteredDictionary
 });
 var editor = new Editor({
-	filteredDictionary: filteredDictionary
+	filteredDictionary: filteredDictionary,
+	fullDictionary: fullDictionary,
 });
 var notification = new Notification({});
 var autoGenerator = new AutoGenerator({

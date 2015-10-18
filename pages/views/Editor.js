@@ -3,6 +3,7 @@ var Editor = Backbone.View.extend({
 
 	initialize: function(options) {
 		this.filteredDictionary = options.filteredDictionary;
+		this.fullDictionary = options.fullDictionary;
 		this.subviews = [];
 
 		this.listenTo(this.filteredDictionary, 'reset', this.render);
@@ -20,7 +21,7 @@ var Editor = Backbone.View.extend({
 	renderItem: function(item) {
 		var subview = new EditorItem({
 			dictionaryItem: item,
-			filteredDictionary: this.filteredDictionary
+			fullDictionary: this.fullDictionary
 		});
 
 		this.subviews.push(subview);

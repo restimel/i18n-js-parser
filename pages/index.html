@@ -131,6 +131,26 @@
 				<% }) %>
 			</ul>
 		</details>
+		<details>
+			<% var similar = this.fullDictionary.getClose(this.dictionaryItem) %>
+			<summary><%= similar.length %> similar sentences</summary>
+			<ul>
+				<% _.each(similar, function(item) { %>
+					<li>
+						<details>
+							<summary>
+								<%- item.has('context') ? '[' + item.get('context') + '] ' : '' %><%- item.get('key')%><%= item.isUseless() ? ' <i>(no more used)</i>' : '' %>
+							</summary>
+							<ul>
+							<% _.each(configuration.get('displayLabels'), function(item_lbl) { %>
+								<li><strong><%-item_lbl %></strong>: <%- item.get('labels')[item_lbl] %></li>
+							<% }) %>
+							</ul>
+						</details>
+					</li>
+				<% }) %>
+			</ul>
+		</details>
 	</div>
 	</script>
 
@@ -154,6 +174,9 @@
 							<option value="key-value">key value</option>
 							<% configuration.get('labels').forEach(function(label) { %>
 								<option value="lbl-<%- label %>">value of label "<%- label %>"</option>
+							<% }) %>
+							<% configuration.get('labels').forEach(function(label) { %>
+								<option value="same-<%- label %>">the "<%- label %>" value of the first similar key</option>
 							<% }) %>
 						</select>
 					</label>
@@ -179,6 +202,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
+	<script type="text/javascript" src="./lib/Levenshtein.js"></script>
 	<script type="text/javascript" src="./models/Configuration.js"></script>
 	<script type="text/javascript" src="./models/DictionaryItem.js"></script>
 	<script type="text/javascript" src="./collections/Dictionary.js"></script>
