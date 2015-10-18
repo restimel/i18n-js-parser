@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta char-code="utf-8">
+	<title>i18n translation parser</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/i18n-parser.css">
+</head>
+<body>
+	<div class="panel-header row">
+		<div class="search col-md-6">Search</div>
+		<div class="search-info col-md-6">Info</div>
+	</div>
+	<div class="editor"></div>
+	<div class="auto-generator"></div>
+	<div class="notification"></div>
+
+	<script type="text/html" id="searchTemplate">
+	<details open>
+		<summary>
+			Filter
+		</summary>
+		<div class="form-horizontal">
+			<div class="form-group">
+				<label for="filter-contains" class="control-label col-sm-4">contains</label>
+				<div class="col-sm-8">
+					<input placeholder="*" type="text" class="form-control" id="filter-contains">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="filter-files" class="control-label col-sm-4">in files</label>
+				<div class="col-sm-8">
+					<input placeholder="all files" type="text" class="form-control" id="filter-files">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="filter-status" class="control-label col-sm-4">has status</label>
+				<div class="col-sm-8">
+					<select class="form-control" id="filter-status">
+						<option value="All">All</option>
+						<option value="Not">Not translated</option>
+						<option value="Partial">Partially translated</option>
+						<option value="Full">Fully translated</option>
+						<option value="Useless">Useless</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</details>
+	<details>
+		<summary>
+			Display configuration
+		</summary>
+		<% configuration.get('labels').forEach(function(label) { %>
+			<div class="dsp-lbl-row">
+				<input
+					type="checkbox"
+					class="dsp-lbl"
+					data-lng="<%- label %>"
+					id="dsp-lbl-<%- label %>"
+					<%= _.contains(configuration.get('displayLabels'), label) ? 'checked' : '' %>
+				>
+				<label for="dsp-lbl-<%- label %>">
+					<%- label %>
+				</label>
+			</div>
+		<% }) %>
+	</details>
+	</script>
+
+	<script type="text/html" id="infoTemplate">
+	<div class="row">
+		<div class="col-sm-8">Number of displayed items</div>
+		<div class="col-sm-4"><%= this.filteredDictionary.length %> / <%= this.fullDictionary.length %></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-8">Number of partially or not translated items</div>
+		<div class="col-sm-4"><%= this.getNbPartial() %></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-8">Number of useless items</div>
+		<div class="col-sm-4"><%= this.getNbUseless() %></div>
+	</div>
+	<div class="command-panel">
+		<button class="autoGen btn btn-default">Auto-Fill</button>
+		<button class="save btn btn-primary">Save</button>
+	</div>
+	</script>
+
+	<script type="text/html" id="editorItemTemplate">
+	<div class="col-sm-offset-1 col-sm-6">
+		<div class="form-horizontal">
+			<% if (this.dictionaryItem.has('context')) { %>
+				<div class="form-group">
+					<label class="control-label col-sm-2">Context</label>
+					<div class="col-sm-10">
+						<%- this.dictionaryItem.get('context') %>
+					</div>
+				</div>
+			<% } %>
+			<div class="form-group">
+				<label class="control-label col-sm-2">Key</label>
+				<div class="col-sm-10">
+					<%- this.dictionaryItem.get('key') %>
+				</div>
+			</div>
+			<% _.each(configuration.get('displayLabels'), function(label) { %>
+				<div class="form-group">
+					<label for="item-cid-<%- label %>" class="control-label col-sm-2"><%- label %></label>
+					<div class="col-sm-10">
+						<input
+							type="text"
+							class="form-control dictionary-label"
+							id="item-cid-<%- label %>"
+							data-lng="<%- label %>"
+							value="<%- this.dictionaryItem.get('labels')[label] %>"
+						>
+					</div>
+				</div>
+			<% }, this) %>
+		</div>
+	</div>
+	<div class="col-sm-5">
+		<br>
+		<details>
+			<summary>Used in <%= this.dictionaryItem.get('files').length %> files</summary>
+			<ul>
+				<% _.each(this.dictionaryItem.get('files'), function(file) { %>
+					<li><%- file %></li>
+				<% }) %>
+			</ul>
+		</details>
+	</div>
+	</script>
+
+	<script type="text/html" id="autoGeneratorTemplate">
+	<div class="modal-auto-generator modal fade in">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Auto-filler</h4>
+				</div>
+				<div class="modal-body">
+					<label>Fill empty fields of label 
+					<select id="empty-field-Label">
+						<% configuration.get('labels').forEach(function(label) { %>
+							<option value="<%- label %>"><%- label %></option>
+						<% }) %>
+					</select></label><br>
+					<label>with 
+						<select id="fill-with">
+							<option value="key-value">key value</option>
+							<% configuration.get('labels').forEach(function(label) { %>
+								<option value="lbl-<%- label %>">value of label "<%- label %>"</option>
+							<% }) %>
+						</select>
+					</label>
+				</div>
+				<div class="modal-footer">
+					<button class="cancel btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="run btn btn-primary">Run</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</script>
+
+	<script type="text/html" id="notificationTemplate">
+	<div class="alert alert-<%= this.type %> alert-dismissible" role="alert">
+		<button class="close">&times;</button>
+		<%- this.msg %>
+	</div>
+	</script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script> 
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="./models/Configuration.js"></script>
+	<script type="text/javascript" src="./models/DictionaryItem.js"></script>
+	<script type="text/javascript" src="./collections/Dictionary.js"></script>
+	<script type="text/javascript" src="./views/Search.js"></script>
+	<script type="text/javascript" src="./views/Info.js"></script>
+	<script type="text/javascript" src="./views/Editor.js"></script>
+	<script type="text/javascript" src="./views/EditorItem.js"></script>
+	<script type="text/javascript" src="./views/AutoGenerator.js"></script>
+	<script type="text/javascript" src="./views/Notification.js"></script>
+	<script type="text/javascript" src="./script/mainPage.js"></script>
+</body>
+</html>

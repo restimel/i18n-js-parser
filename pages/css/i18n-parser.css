@@ -1,0 +1,67 @@
+.notification {
+    position: fixed;
+    bottom: 0;
+    left: 30px;
+    right: 30px;
+}
+
+.panel-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    margin: 0;
+    box-shadow: 0 0 20px #142F79;
+}
+
+.panel-header > div {
+    height: 200px;
+    overflow-y: auto;
+}
+
+.editor {
+    position: absolute;
+    top: 200px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.dsp-lbl-row {
+    padding-left: 30%;
+}
+
+.command-panel {
+    bottom: 15px;
+    position: absolute;
+}
+
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+.bs-callout-default {
+    border-left-color: #777;
+}
+.bs-callout-primary {
+    border-left-color: #428bca;
+}
+.bs-callout-success {
+    border-left-color: #5cb85c;
+}
+.bs-callout-danger {
+    border-left-color: #d9534f;
+}
+.bs-callout-warning {
+    border-left-color: #f0ad4e;
+}
+.bs-callout-info {
+    border-left-color: #5bc0de;
+}
