@@ -1,7 +1,8 @@
 var Configuration = Backbone.Model.extend({
 	defaults: {
 		labels: [],
-		displayLabels: []
+		displayLabels: [],
+		similarThreshold: 0.42
 	},
 
 	initialize: function() {

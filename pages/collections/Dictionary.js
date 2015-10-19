@@ -35,7 +35,9 @@ var Dictionary = Backbone.Collection.extend({
 	},
 
 	getClose: function(refModel) {
-		var key, list;
+		var key, list, threshold;
+
+		threshold = configuration.get('similarThreshold');
 
 		if (typeof refModel === 'string') {
 			key = refModel;
@@ -60,7 +62,7 @@ var Dictionary = Backbone.Collection.extend({
 				distance: levenshtein.distance / key.length
 			};
 		}).filter(function(o) {
-			return o.distance < 0.42 && o.model !== refModel;
+			return o.distance < threshold && o.model !== refModel;
 		}).sortBy('distance')
 		  .pluck('model')
 		  .value();

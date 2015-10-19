@@ -10,7 +10,7 @@ function saveDictionary(dictionary, callback) {
 	fs.writeFile('./ressources/dictionary.json', dictionary, {
 		flags: 'w',
 		defaultEncoding: 'utf8',
-		mode: 0o666
+		mode: parseInt('666', 8)
 	}, callback);
 }
 

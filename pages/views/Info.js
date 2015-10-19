@@ -23,7 +23,7 @@ var Info = Backbone.View.extend({
 		return this;
 	},
 
-	getNbPartial() {
+	getNbPartial: function() {
 		var partial = this.filteredDictionary.filter(function(model) {
 			return model.isPartial();
 		});
@@ -31,7 +31,7 @@ var Info = Backbone.View.extend({
 		return partial.length;
 	},
 
-	getNbUseless() {
+	getNbUseless: function() {
 		var useless = this.filteredDictionary.filter(function(model) {
 			return model.isUseless();
 		});
