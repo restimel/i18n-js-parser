@@ -2,12 +2,14 @@
 
 var fs = require('fs');
 
+var configDictionary = './ressources/dictionary.json';
+
 function writer(eventEmitter) {
 	eventEmitter.addListener('save', saveDictionary);
 }
 
 function saveDictionary(dictionary, callback) {
-	fs.writeFile('./ressources/dictionary.json', dictionary, {
+	fs.writeFile(configDictionary, dictionary, {
 		flags: 'w',
 		defaultEncoding: 'utf8',
 		mode: parseInt('666', 8)

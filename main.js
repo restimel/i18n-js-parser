@@ -3,6 +3,7 @@
 
 var events = require('events');
 var web = require('./modules/web-router.js');
+var Adapter = require('./modules/adapter.js');
 var translator = require('./modules/translator-writer.js');
 
 /**
@@ -23,6 +24,11 @@ function main() {
 
     var eventEmitter = new events.EventEmitter()
     
+    var adapter = new Adapter(eventEmitter);
+
+    adapter.parseFile('./ressources/test.json');
+    adapter.writeParsed();
+
     web.server(eventEmitter, 8000);
     translator.writer(eventEmitter);
 }
