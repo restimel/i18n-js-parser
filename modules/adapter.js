@@ -1,8 +1,31 @@
 'use strict';
 
 var fs = require('fs');
+var tool = require('./tools.js');
+var configuration = require('./configuration.js');
 
-var configParsed = './ressources/parsed.json';
+var configParsed = configuration.path.parsedFile;
+
+function clean(str) {
+	var cleanResult = configuration.adapter.rules.cleanResult;
+
+	if (configuration.adapter.rules.cleanResult instanceof Array) {
+		cleanResult.forEach(function(cleaner) {
+			if (cleaner instanceof Array) {
+				if (typeof cleaner[0] === 'string') {
+					cleaner[0] = new RegExp(cleaner[0], 'g');
+				}
+				str = str.replace(cleaner[0], cleaner[1]);
+			}
+		});
+	}
+
+	return str;
+}
+
+/*
+ * --------------------------------
+ */
 
 function Item() {
 	this.key = '';
@@ -92,15 +115,7 @@ Adapter.prototype.writeParsed = function() {
 	}
 };
 
-Adapter.prototype.rules = {
-	newItem: /\}\s*,\s*\{/,
-	getKey: /"key"\s*:\s*"((?:[^"\\]+|\\.)+)"/,
-	getContext: /"context"\s*:\s*"((?:[^"\\]+|\\.)+)"/,
-	getLabel: /"([^"]+)"\s*:\s*"((?:[^"\\]+|\\.)+)"/g,
-	getLabels: /"labels"\s*:\s*\{\s*((?:"(?:[^"\\]+|\\.)+"[\s,:]+)+)\s*\}/,
-	getFile: /"((?:[^"\\]+|\\.)+)"/g,
-	getFiles: /"files"\s*:\s*\[\s*((?:"(?:[^"\\]+|\\.)+"[\s,]*)+)\]/
-};
+Adapter.prototype.rules = tool.extend({}, configuration.adapter.rules);
 
 Adapter.prototype.setRules = function(rules) {
 	var x;
@@ -126,13 +141,13 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel) {
 			return;
 		}
 
-		this.currentItem.key = parser[1];
+		this.currentItem.key = clean(parser[1]);
 
 		/* look for context */
 		parser = chunk.match(this.rules.getContext);
 
 		if (parser && parser[1]) {
-			this.currentItem.context = parser[1];
+			this.currentItem.context = clean(parser[1]);
 		}
 
 		/* look for label(s) */
@@ -140,20 +155,20 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel) {
 			parser = chunk.match(this.rules.getLabel);
 
 			if (parser && parser[1]) {
-				this.currentItem.addLabel(ctxLabel, parser[1]);
+				this.currentItem.addLabel(ctxLabel, clean(parser[1]));
 			}
 		} else {
 			parser = chunk.match(this.rules.getLabels);
 
 			if (parser) {
 				if (parser[1] && parser[2]) {
-					this.currentItem.addLabel(parser[1], parser[2]);
+					this.currentItem.addLabel(parser[1], clean(parser[2]));
 				} else if(parser[1] && this.rules.getLabel.global) {
 					// look for each labels
 					part = parser[1];
 					while(parser = this.rules.getLabel.exec(part)) {
 						if (parser[1] && parser[2]) {
-							this.currentItem.addLabel(parser[1], parser[2]);
+							this.currentItem.addLabel(parser[1], clean(parser[2]));
 						}
 					}
 					this.rules.getLabel.lastIndex = 0; // restore the index of the rgx
@@ -170,7 +185,7 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel) {
 				part = parser[1];
 				while(parser = this.rules.getFile.exec(part)) {
 					if (parser[1]) {
-						this.currentItem.addFile(parser[1]);
+						this.currentItem.addFile(clean(parser[1]));
 					}
 				}
 				this.rules.getLabel.lastIndex = 0; // restore the index of the rgx

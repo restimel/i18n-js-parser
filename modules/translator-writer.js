@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var configuration = require('./configuration.js');
 
 var configDictionary = './ressources/dictionary.json';
 
