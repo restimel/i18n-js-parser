@@ -26,6 +26,10 @@ var Search = Backbone.View.extend({
 		this.listenTo(this.filteredDictionary, {
 			'change:values': this.filterCollection
 		});
+
+		this.listenTo(this.fullDictionary, {
+			'update': this.filterCollection
+		});
 	},
 
 	render: function() {

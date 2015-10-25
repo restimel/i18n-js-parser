@@ -29,6 +29,7 @@ var editor = new Editor({
 	fullDictionary: fullDictionary,
 });
 var notification = new Notification({});
+var confirmation = new Confirm({});
 var autoGenerator = new AutoGenerator({
 	dictionary: filteredDictionary
 });

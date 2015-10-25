@@ -14,6 +14,7 @@
 	</div>
 	<div class="editor"></div>
 	<div class="auto-generator"></div>
+	<div id="confirm-container"></div>
 	<div class="notification"></div>
 
 	<script type="text/html" id="searchTemplate">
@@ -123,6 +124,31 @@
 	</div>
 	<div class="col-sm-5">
 		<br>
+		<div class="pull-right dropdown item-actions">
+			<button class="btn btn-default" data-toggle="dropdown">
+				<span class="glyphicon glyphicon-cog"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="#" class="item-action" data-action="Delete">
+						<span class="glyphicon glyphicon-trash"></span>
+						Delete
+					</a>
+				</li>
+				<li>
+					<a href="#" class="item-action" data-action="Reset">
+						<span class="glyphicon glyphicon-erase"></span>
+						Remove changes
+					</a>
+				</li>
+				<li>
+					<a href="#" class="item-action" data-action="Flag">
+						<span class="glyphicon glyphicon-flag"></span>
+						Flag it
+					</a>
+				</li>
+			</ul>
+		</div>
 		<details>
 			<summary>Used in <%= this.dictionaryItem.get('files').length %> files</summary>
 			<ul>
@@ -190,6 +216,26 @@
 	</div>
 	</script>
 
+	<script type="text/html" id="confirmTemplate">
+	<div class="modal-confirm modal fade in">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title"><%- this.title %></h4>
+				</div>
+				<div class="modal-body">
+					<p><%= this.message %></p>
+				</div>
+				<div class="modal-footer">
+					<button class="cancel btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="confirm btn btn-primary">Confirm</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</script>
+
 	<script type="text/html" id="notificationTemplate">
 	<div class="alert alert-<%= this.type %> alert-dismissible" role="alert">
 		<button class="close">&times;</button>
@@ -210,6 +256,7 @@
 	<script type="text/javascript" src="./views/Info.js"></script>
 	<script type="text/javascript" src="./views/Editor.js"></script>
 	<script type="text/javascript" src="./views/EditorItem.js"></script>
+	<script type="text/javascript" src="./views/Confirm.js"></script>
 	<script type="text/javascript" src="./views/AutoGenerator.js"></script>
 	<script type="text/javascript" src="./views/Notification.js"></script>
 	<script type="text/javascript" src="./script/mainPage.js"></script>

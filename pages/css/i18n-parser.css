@@ -42,6 +42,14 @@
     position: absolute;
 }
 
+.item-actions {
+    margin-right: 15px;
+}
+
+.item-actions > button {
+    border-radius: 25px;
+}
+
 .bs-callout {
     padding: 20px;
     margin: 20px 0;
@@ -66,4 +74,12 @@
 }
 .bs-callout-info {
     border-left-color: #5bc0de;
+}
+
+.dropdown-menu a > span {
+    margin-right: 15px;
+}
+
+summary {
+    cursor: pointer;
 }

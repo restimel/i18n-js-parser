@@ -7,6 +7,18 @@ var DictionaryItem = Backbone.Model.extend({
 		labels: {}
 	},
 
+	getName: function() {
+		var name = '';
+
+		if (this.has('context')) {
+			name += '[' + this.get('context') + '] ';
+		}
+
+		name += this.get('key');
+
+		return name;
+	},
+
 	isPartial: function() {
 		var labels = this.get('labels');
 		var isPartial = _.some(labels, function(label) {
