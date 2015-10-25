@@ -29,7 +29,8 @@ var AutoGenerator = Backbone.View.extend({
 	run: function() {
 		var field = this.$el.find('#empty-field-Label').val();
 		var withfield = this.$el.find('#fill-with').val();
-		var count = this.dictionary.autoFill(field, withfield);
+		var postAction = this.$el.find('#post-actions').val();
+		var count = this.dictionary.autoFill(field, withfield, postAction);
 
 		if (count) {
 			notification.success(count + ' sentences have been updated.', 8000);

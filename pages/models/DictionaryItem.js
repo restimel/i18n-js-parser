@@ -59,10 +59,15 @@ var DictionaryItem = Backbone.Model.extend({
 			flag = !this.flag;
 		}
 
-		this.flag = flag;
+		if (this.flag !== flag) {
+			this.flag = flag;
+			return true;
+		}
+
+		return false;
 	},
 
-	autoFill: function(field, withField) {
+	autoFill: function(field, withField, postAction) {
 		var value, label, item;
 
 		if (this.get('labels')[field]) {
@@ -86,6 +91,11 @@ var DictionaryItem = Backbone.Model.extend({
 
 		if (value) {
 			this.get('labels')[field] = value;
+
+			switch(postAction) {
+				case 'do-flag': this.toggleFlag(true); break;
+				case 'do-unflag': this.toggleFlag(false); break;
+			}
 		}
 
 		return value;

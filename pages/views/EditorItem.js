@@ -73,6 +73,7 @@ var EditorItem = Backbone.View.extend({
 	toggleFlag: function(flag) {
 		this.dictionaryItem.toggleFlag(flag);
 		this.render();
+		itemsInfo.render();
 	},
 
 	onLabelChange: function(evt) {

@@ -86,9 +86,45 @@
 		<div class="col-sm-8">Number of useless items</div>
 		<div class="col-sm-4"><%= this.getNbUseless() %></div>
 	</div>
+	<div class="row">
+		<div class="col-sm-8">Number of flagged items</div>
+		<div class="col-sm-4"><%= this.filteredDictionary.getNbFlagged() %> / <%= this.fullDictionary.getNbFlagged() %></div>
+	</div>
 	<div class="command-panel">
-		<button class="autoGen btn btn-default"><span class="fa fa-cogs"></span>Auto-Fill</button>
-		<button class="save btn btn-primary"><span class="fa fa-save"></span>Save</button>
+		<button class="pull-right save btn btn-primary"><span class="fa fa-save"></span>Save</button>
+		<div class="command-actions dropdown pull-right">
+			<button class="btn btn-default <%= this.filteredDictionary.length === 0 ? 'disabled' : '' %>" data-toggle="dropdown">
+				<span class="fa fa-cogs"></span>Actions
+			</button>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="#" class="command-action" data-action="Delete">
+						<span class="fa fa-trash-o fa-fw"></span>
+						Delete all filtered items
+					</a>
+				</li>
+				<li>
+					<a href="#" class="command-action" data-action="Flag">
+						<span class="fa fa-flag fa-fw"></span>
+						Flag all filtered items
+					</a>
+				</li>
+				<li>
+					<a href="#" class="command-action" data-action="Unflag">
+						<span class="fa fa-flag-o fa-fw"></span>
+						Unflag all filtered items
+					</a>
+				</li>
+				<li class="divider">
+				</li>
+				<li>
+					<a href="#" class="command-action" data-action="auto-filler">
+						<span class="fa fa-pencil-square-o fa-fw"></span>
+						Auto-filler
+					</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 	</script>
 
@@ -219,6 +255,15 @@
 							<% configuration.get('labels').forEach(function(label) { %>
 								<option value="same-<%- label %>">the "<%- label %>" value of the first similar key</option>
 							<% }) %>
+						</select>
+					</label>
+					<br>
+					<br>
+					<label>And
+						<select id="post-actions">
+							<option value="do-nothing">do nothing</option>
+							<option value="do-flag">flag them</option>
+							<option value="do-unflag">unflag them</option>
 						</select>
 					</label>
 				</div>

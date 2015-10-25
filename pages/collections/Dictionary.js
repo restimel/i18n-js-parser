@@ -19,10 +19,10 @@ var Dictionary = Backbone.Collection.extend({
 		});
 	},
 
-	autoFill: function(field, withField) {
+	autoFill: function(field, withField, postAction) {
 		var count = 0;
 		this.each(function(model) {
-			if (model.autoFill(field, withField)) {
+			if (model.autoFill(field, withField, postAction)) {
 				count++;
 			}
 		});
@@ -32,6 +32,14 @@ var Dictionary = Backbone.Collection.extend({
 		}
 
 		return count;
+	},
+
+	getNbFlagged: function() {
+		var flagged = this.filter(function(model) {
+			return model.isFlagged();
+		});
+
+		return flagged.length;
 	},
 
 	getClose: function(refModel) {
@@ -71,6 +79,6 @@ var Dictionary = Backbone.Collection.extend({
 	},
 
 	toggleFlag: function(flag) {
-		this.invoke('toggleFlag', flag);
+		return this.invoke('toggleFlag', flag);
 	}
 });

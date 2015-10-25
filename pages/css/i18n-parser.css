@@ -30,7 +30,14 @@
 
 .panel-header > div {
     height: 200px;
+}
+
+.search {
     overflow-y: auto;
+}
+
+.search-info {
+    overflow-y: visible;
 }
 
 .editor {
@@ -50,8 +57,13 @@
 }
 
 .command-panel {
+    right: 30px;
     bottom: 15px;
     position: absolute;
+}
+
+.command-panel > * {
+    margin-right: 15px;
 }
 
 .command-panel .fa {

@@ -15,7 +15,7 @@ var fullDictionary = new Dictionary({
 var filteredDictionary = new Dictionary();
 
 /* Views */
-var info = new Info({
+var itemsInfo = new Info({
 	fullDictionary: fullDictionary,
 	filteredDictionary: filteredDictionary
 });
@@ -35,7 +35,7 @@ var autoGenerator = new AutoGenerator({
 });
 
 search.render();
-info.render();
+itemsInfo.render();
 editor.render();
 
 function fetchRawDictionary() {
