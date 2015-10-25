@@ -5,6 +5,7 @@
 	<title>i18n translation parser</title>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/i18n-parser.css">
 </head>
 <body>
@@ -86,8 +87,8 @@
 		<div class="col-sm-4"><%= this.getNbUseless() %></div>
 	</div>
 	<div class="command-panel">
-		<button class="autoGen btn btn-default">Auto-Fill</button>
-		<button class="save btn btn-primary">Save</button>
+		<button class="autoGen btn btn-default"><span class="fa fa-cogs"></span>Auto-Fill</button>
+		<button class="save btn btn-primary"><span class="fa fa-save"></span>Save</button>
 	</div>
 	</script>
 
@@ -128,25 +129,30 @@
 		<br>
 		<div class="pull-right dropdown item-actions">
 			<button class="btn btn-default" data-toggle="dropdown">
-				<span class="glyphicon glyphicon-cog"></span>
+				<span class="fa fa-cog"></span>
 			</button>
 			<ul class="dropdown-menu">
 				<li>
 					<a href="#" class="item-action" data-action="Delete">
-						<span class="glyphicon glyphicon-trash"></span>
+						<span class="fa fa-trash-o fa-fw"></span>
 						Delete
 					</a>
 				</li>
-				<li>
-					<a href="#" class="item-action" data-action="Reset">
-						<span class="glyphicon glyphicon-erase"></span>
+				<li <%= true ? 'class="disabled"' : '' %>>
+					<a href="#" class="item-action disabled" data-action="Reset">
+						<span class="fa fa-eraser fa-fw"></span>
 						Remove changes
 					</a>
 				</li>
 				<li>
 					<a href="#" class="item-action" data-action="Flag">
-						<span class="glyphicon glyphicon-flag"></span>
-						<%= this.dictionaryItem.isFlagged() ? 'Unflag it' : 'Flag it' %>
+						<% if (this.dictionaryItem.isFlagged()) { %>
+							<span class="fa fa-flag-o fa-fw"></span>
+							Unflag it
+						<% } else { %>
+							<span class="fa fa-flag fa-fw"></span>
+							Flag it
+						<% } %>
 					</a>
 				</li>
 			</ul>
@@ -154,7 +160,7 @@
 
 		<% if (this.dictionaryItem.isFlagged()) { %>
 			<div class="tag-active flagged pull-right" title="This item is flagged">
-				<span class="glyphicon glyphicon-flag"></span>
+				<span class="fa fa-flag"></span>
 			</div>
 		<% } %>
 

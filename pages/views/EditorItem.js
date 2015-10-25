@@ -50,7 +50,7 @@ var EditorItem = Backbone.View.extend({
 		if (deleted) {
 			notification.success('item "' + this.dictionaryItem.getName() + '" has been deleted.', 8000);
 		} else {
-			notification.error('An erorr appeared during deletion of item "' + this.dictionaryItem.getName() + '".');
+			notification.error('An error appeared during deletion of item "' + this.dictionaryItem.getName() + '".');
 		}
 	},
 
@@ -58,13 +58,13 @@ var EditorItem = Backbone.View.extend({
 		var message = 'Do you confirm to definitevely remove item "' + _.escape(this.dictionaryItem.getName()) + '"?';
 
 		if (!this.dictionaryItem.isUseless()) {
-			message += '<br><br><span class="glyphicon glyphicon-warning-sign"></span>'
+			message += '<br><br><span class="fa fa-warning"></span>'
 					+  'This item is used in ' + this.dictionaryItem.get('files').length + ' files.<br>'
 					+  'Removing this item will lead to a loss of translation for these files.';
 		}
 
 		confirmation.confirm(
-			'You are about to delete item "' + this.dictionaryItem.get('key') + '"',
+			'You are about to delete item "' + this.dictionaryItem.get('key') + '"!',
 			message,
 			this.removeItem.bind(this)
 		);
@@ -85,11 +85,17 @@ var EditorItem = Backbone.View.extend({
 	},
 
 	onAction: function(evt) {
-		var action;
+		var action, $target;
 
 		evt.preventDefault();
 
-		action = $(evt.currentTarget).data('action');
+		$target = $(evt.currentTarget);
+
+		if ($target.parent().hasClass('disabled')) {
+			return;
+		}
+
+		action = $target.data('action');
 
 		switch(action.toLowerCase()) {
 			case 'delete': this.confirmRemove(); break;

@@ -54,6 +54,10 @@
     position: absolute;
 }
 
+.command-panel .fa {
+    margin-right: 10px;
+}
+
 .item-actions {
     margin-right: 15px;
 }
