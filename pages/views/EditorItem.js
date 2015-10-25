@@ -6,7 +6,8 @@ var EditorItem = Backbone.View.extend({
 
 	events: {
 	  'change .dictionary-label': 'onLabelChange',
-	  'click .item-action': 'onAction'
+	  'click .item-action': 'onAction',
+	  'click .flagged': 'toggleFlag'
 	},
 
 	initialize: function(options) {
@@ -69,6 +70,11 @@ var EditorItem = Backbone.View.extend({
 		);
 	},
 
+	toggleFlag: function(flag) {
+		this.dictionaryItem.toggleFlag(flag);
+		this.render();
+	},
+
 	onLabelChange: function(evt) {
 		var $input = $(evt.currentTarget);
 		var label = $input.data('lng');
@@ -86,9 +92,8 @@ var EditorItem = Backbone.View.extend({
 		action = $(evt.currentTarget).data('action');
 
 		switch(action.toLowerCase()) {
-			case 'delete':
-				this.confirmRemove();
-				break;
+			case 'delete': this.confirmRemove(); break;
+			case 'flag': this.toggleFlag(); break;
 			default:
 				throw new Error('Action "' + action + '" is unknown');
 		}

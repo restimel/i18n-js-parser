@@ -44,6 +44,8 @@
 						<option value="Partial">Partially translated</option>
 						<option value="Full">Fully translated</option>
 						<option value="Useless">Useless</option>
+						<option value="Flagged">Flagged</option>
+						<option value="Unflagged">Unflagged</option>
 					</select>
 				</div>
 			</div>
@@ -144,11 +146,18 @@
 				<li>
 					<a href="#" class="item-action" data-action="Flag">
 						<span class="glyphicon glyphicon-flag"></span>
-						Flag it
+						<%= this.dictionaryItem.isFlagged() ? 'Unflag it' : 'Flag it' %>
 					</a>
 				</li>
 			</ul>
 		</div>
+
+		<% if (this.dictionaryItem.isFlagged()) { %>
+			<div class="tag-active flagged pull-right" title="This item is flagged">
+				<span class="glyphicon glyphicon-flag"></span>
+			</div>
+		<% } %>
+
 		<details>
 			<summary>Used in <%= this.dictionaryItem.get('files').length %> files</summary>
 			<ul>

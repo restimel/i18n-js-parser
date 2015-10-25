@@ -68,5 +68,9 @@ var Dictionary = Backbone.Collection.extend({
 		  .value();
 
 		return list;
+	},
+
+	toggleFlag: function(flag) {
+		this.invoke('toggleFlag', flag);
 	}
 });

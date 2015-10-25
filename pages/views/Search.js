@@ -63,6 +63,12 @@ var Search = Backbone.View.extend({
 			case 'Useless':
 				isValid = item.isUseless();
 				break;
+			case 'Flagged':
+				isValid = item.isFlagged();
+				break;
+			case 'Unflagged':
+				isValid = !item.isFlagged();
+				break;
 		}
 
 		isValid = isValid && this.containFilter.test(item.get('key'));

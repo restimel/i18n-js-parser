@@ -50,6 +50,18 @@ var DictionaryItem = Backbone.Model.extend({
 		return _.isEmpty(this.get('files'));
 	},
 
+	isFlagged: function() {
+		return !!this.flag;
+	},
+
+	toggleFlag: function(flag) {
+		if (typeof flag !== 'boolean') {
+			flag = !this.flag;
+		}
+
+		this.flag = flag;
+	},
+
 	autoFill: function(field, withField) {
 		var value, label, item;
 
