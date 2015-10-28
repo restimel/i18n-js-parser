@@ -73,7 +73,6 @@ Adapter.prototype.init = function() {
 };
 
 Adapter.prototype.parseFile = function(path, ctxLabel) {
-	var data = '';
 	var index = this.reading.push(path) -1;
 
 	fs.readFile(path, {
