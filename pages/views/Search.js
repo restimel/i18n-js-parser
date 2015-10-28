@@ -28,7 +28,7 @@ var Search = Backbone.View.extend({
 		});
 
 		this.listenTo(this.fullDictionary, {
-			'update': this.filterCollection
+			'remove:items': this.filterCollection
 		});
 	},
 
@@ -86,7 +86,7 @@ var Search = Backbone.View.extend({
 		});
 
 		if (!item) {
-			this.fullDictionary.add(dictionaryItem);
+			this.fullDictionary.add(dictionaryItem, {silent: true});
 		} else {
 			item.set('files', dictionaryItem.get('files'));
 		}

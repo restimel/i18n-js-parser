@@ -82,7 +82,7 @@ var DictionaryItem = Backbone.Model.extend({
 			value = this.get('labels')[label];
 
 		} else if (withField.indexOf('same-') === 0) {
-			item = fullDictionary.getClose(this) [0];
+			item = this.getClose()[0];
 			label = withField.substr(5);
 			if (item) {
 				value = item.get('labels')[label];
@@ -99,5 +99,45 @@ var DictionaryItem = Backbone.Model.extend({
 		}
 
 		return value;
+	},
+
+	getClose: function() {
+		var key, list, threshold, refModel;
+
+		if (DictionaryItem.similars[this.cid]) {
+			return DictionaryItem.similars[this.cid];
+		}
+
+		threshold = configuration.get('similarThreshold');
+		key = this.get('key');
+		refModel = this;
+
+		list = fullDictionary.chain().map(function(model) {
+			var levenshtein;
+
+			if (model === refModel) {
+				return {
+					model: model,
+					distance: 0
+				};
+			}
+
+			levenshtein = new Levenshtein(key, model.get('key'));
+
+			return {
+				model: model,
+				distance: levenshtein.distance / key.length
+			};
+		}).filter(function(o) {
+			return o.distance < threshold && o.model !== refModel;
+		}).sortBy('distance')
+		  .pluck('model')
+		  .value();
+
+		DictionaryItem.similars[this.cid] = list;
+
+		return list;
 	}
 });
+
+DictionaryItem.similars = {};

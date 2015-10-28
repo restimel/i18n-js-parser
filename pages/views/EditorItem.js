@@ -45,7 +45,10 @@ var EditorItem = Backbone.View.extend({
 	},
 
 	removeItem: function() {
-		var deleted = this.fullDictionary.remove(this.dictionaryItem);
+		var deleted = this.fullDictionary.remove(this.dictionaryItem, {silent: true});
+
+		DictionaryItem.similars = {}; // quick clean but could be better managed
+		this.fullDictionary.trigger('remove:items', deleted);
 
 		if (deleted) {
 			notification.success('item "' + this.dictionaryItem.getName() + '" has been deleted.', 8000);

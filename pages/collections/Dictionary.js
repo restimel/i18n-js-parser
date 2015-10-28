@@ -42,42 +42,6 @@ var Dictionary = Backbone.Collection.extend({
 		return flagged.length;
 	},
 
-	getClose: function(refModel) {
-		var key, list, threshold;
-
-		threshold = configuration.get('similarThreshold');
-
-		if (typeof refModel === 'string') {
-			key = refModel;
-		} else {
-			key = refModel.get('key');
-		}
-
-		list = this.chain().map(function(model) {
-			var levenshtein;
-
-			if (model === refModel) {
-				return {
-					model: model,
-					distance: 0
-				};
-			}
-
-			levenshtein = new Levenshtein(key, model.get('key'));
-
-			return {
-				model: model,
-				distance: levenshtein.distance / key.length
-			};
-		}).filter(function(o) {
-			return o.distance < threshold && o.model !== refModel;
-		}).sortBy('distance')
-		  .pluck('model')
-		  .value();
-
-		return list;
-	},
-
 	toggleFlag: function(flag) {
 		return this.invoke('toggleFlag', flag);
 	}

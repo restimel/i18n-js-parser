@@ -44,12 +44,15 @@ var Info = Backbone.View.extend({
 		var notRemoved = [];
 
 		this.filteredDictionary.each(function(item) {
-			if (this.fullDictionary.remove(item)) {
+			if (this.fullDictionary.remove(item, {silent: true})) {
 				number++;
 			} else {
 				notRemoved.push(item);
 			}
 		}, this);
+
+		DictionaryItem.similars = {}; // quick clean but could be better managed
+		this.fullDictionary.trigger('remove:items', this.filteredDictionary);
 
 		if (_.isEmpty(notRemoved)) {
 			notification.success(number + ' items have been deleted.', 8000);

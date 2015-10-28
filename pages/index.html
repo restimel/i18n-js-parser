@@ -209,7 +209,7 @@
 			</ul>
 		</details>
 		<details>
-			<% var similar = this.fullDictionary.getClose(this.dictionaryItem) %>
+			<% var similar = this.dictionaryItem.getClose() %>
 			<summary><%= similar.length %> similar sentences</summary>
 			<ul>
 				<% _.each(similar, function(item) { %>
