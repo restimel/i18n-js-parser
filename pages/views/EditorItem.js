@@ -52,6 +52,7 @@ var EditorItem = Backbone.View.extend({
 
 		if (deleted) {
 			notification.success('item "' + this.dictionaryItem.getName() + '" has been deleted.', 8000);
+			this.remove();
 		} else {
 			notification.error('An error appeared during deletion of item "' + this.dictionaryItem.getName() + '".');
 		}
