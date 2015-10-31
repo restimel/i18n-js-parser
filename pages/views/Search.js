@@ -38,11 +38,11 @@ var Search = Backbone.View.extend({
 		return this;
 	},
 
-	filterCollection: function() {
+	filterCollection: _.throttle(function() {
 		var fArr = this.fullDictionary.filter(this.applyFilter, this);
 
 		this.filteredDictionary.reset(fArr);
-	},
+	}, 200),
 
 	applyFilter: function(item) {
 		var isValid;

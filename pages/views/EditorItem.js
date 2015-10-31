@@ -13,6 +13,8 @@ var EditorItem = Backbone.View.extend({
 	initialize: function(options) {
 		this.dictionaryItem = options.dictionaryItem;
 		this.fullDictionary = options.fullDictionary;
+
+		this.listenTo(this.dictionaryItem, 'update:similars', this.onChangeSimilar);
 	},
 
 	render: function() {
@@ -108,5 +110,9 @@ var EditorItem = Backbone.View.extend({
 			default:
 				throw new Error('Action "' + action + '" is unknown');
 		}
+	},
+
+	onChangeSimilar: function() {
+		this.render();
 	}
 });

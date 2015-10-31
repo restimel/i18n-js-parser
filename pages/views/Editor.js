@@ -22,6 +22,8 @@ var Editor = Backbone.View.extend({
 	render: function() {
 		this.clearSubViews();
 
+		this.itemSize = 166 + configuration.get('displayLabels').length;
+
 		this.computeNbItemsPerScreen();
 		this.renderNext();
 
@@ -43,8 +45,7 @@ var Editor = Backbone.View.extend({
 		_.invoke(this.subviews, 'render');
 	},
 
-	renderNext: function() {
-		// this.indexRendered < this.filteredDictionary.length
+	renderNext: _.throttle(function() {
 		var top = this.el.scrollTop;
 		var nbItem = Math.ceil(top / this.itemSize) + this.nbItemsPerScreen + this.marginNbItem;
 
@@ -52,7 +53,7 @@ var Editor = Backbone.View.extend({
 			.forEach(this.renderItem, this);
 
 		this.elPadding.style.paddingBottom = Math.max(this.filteredDictionary.length - this.indexRendered, 0) * this.itemSize + 'px';
-	},
+	}, 50),
 
 	computeNbItemsPerScreen: function() {
 		var elSize = this.el.offsetHeight;
@@ -67,5 +68,7 @@ var Editor = Backbone.View.extend({
 		_.invoke(this.subviews, 'remove');
 		this.subviews = [];
 		this.indexRendered = 0;
+
+		this.el.scrollTop = 0;
 	}
 });

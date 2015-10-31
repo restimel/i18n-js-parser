@@ -101,12 +101,8 @@ var DictionaryItem = Backbone.Model.extend({
 		return value;
 	},
 
-	getClose: function() {
+	computeClose: function() {
 		var key, list, threshold, refModel;
-
-		if (DictionaryItem.similars[this.cid]) {
-			return DictionaryItem.similars[this.cid];
-		}
 
 		threshold = configuration.get('similarThreshold');
 		key = this.get('key');
@@ -136,8 +132,46 @@ var DictionaryItem = Backbone.Model.extend({
 
 		DictionaryItem.similars[this.cid] = list;
 
-		return list;
+		this.trigger('update:similars', this, list);
+	},
+
+	getClose: function() {
+
+		if (DictionaryItem.similars[this.cid]) {
+			return DictionaryItem.similars[this.cid];
+		}
+
+		DictionaryItem.computeClose(this);
+
+		return [];
 	}
 });
 
 DictionaryItem.similars = {};
+
+DictionaryItem.computeClose = (function() {
+	var running = 0;
+	var list = [];
+
+	function manageList() {
+		var item = list.shift();
+
+		item.computeClose();
+
+		if (list.length) {
+			running = setTimeout(manageList, 30);
+		} else {
+			running = 0;
+		}
+	}
+
+	return function(item) {
+		if (list.indexOf(item) === -1) {
+			list.push(item);
+
+			if (!running) {
+				running = setTimeout(manageList, 10);
+			}
+		}
+	};
+})();
