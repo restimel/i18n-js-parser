@@ -2,6 +2,7 @@ var Search = Backbone.View.extend({
 	el: '.search',
 
 	events: {
+	  'input #filter-context': 'onContextChange',
 	  'input #filter-contains': 'onContainChange',
 	  'input #filter-files': 'onFileChange',
 	  'input #filter-status': 'onStatusChange',
@@ -15,6 +16,7 @@ var Search = Backbone.View.extend({
 		this.fullDictionary = options.fullDictionary;
 		this.filteredDictionary = options.filteredDictionary;
 
+		this.contextFilter = '';
 		this.containFilter = this.buildFilter('');
 		this.fileFilter = '';
 		this.statusFilter = 'All';
@@ -71,6 +73,7 @@ var Search = Backbone.View.extend({
 				break;
 		}
 
+		isValid = isValid && (this.contextFilter === '' || item.has('context') && this.contextFilter.test(item.get('context')));
 		isValid = isValid && this.containFilter.test(item.get('key'));
 		isValid = isValid && (this.fileFilter === '' || _.some(item.get('files'), function(file) {
 			return this.fileFilter.test(file);
@@ -101,6 +104,13 @@ var Search = Backbone.View.extend({
 
 	onUpdateFull: function() {
 		this.rawDictionary.each(this.updateItem, this);
+		this.filterCollection();
+	},
+
+	onContextChange: function(evt) {
+		var value = evt.currentTarget.value;
+
+		this.contextFilter = _.isEmpty(value) ? '' : this.buildFilter(value);
 		this.filterCollection();
 	},
 

@@ -22,14 +22,14 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 200px;
+    height: 236px;
     margin: 0;
     box-shadow: 0 0 20px #142F79;
     z-index: 10;
 }
 
 .panel-header > div {
-    height: 200px;
+    height: 236px;
 }
 
 .search {
@@ -42,7 +42,7 @@
 
 .editor {
     position: absolute;
-    top: 200px;
+    top: 236px;
     left: 0;
     right: 0;
     bottom: 0;
