@@ -5,6 +5,13 @@ var tool = require('./tools.js');
 
 var configuration = {
 	path: {
+		/* files which contains keys and translations */
+		dictionaries: {
+			/* files which contains only one language */
+			lng: {},
+			/* files that contains all translations (which re not specific to one language) */
+			globals: []
+		},
 		/* The new raw file parsed and aggregated which is sent to Front-end */
 		parsedFile: './ressources/parsed.json'
 	},
@@ -19,7 +26,40 @@ var configuration = {
 			getFiles: /"files"\s*:\s*\[\s*((?:"(?:[^"\\]+|\\.)+"[\s,]*)+)\]/,
 			cleanResult: [["\\\\\"", "\""]]
 		}
-	}
+	},
+	/* define the ouput format
+	 * @@	display a @
+	 * @tag@ refers to another tag template
+	 * @TAG@ refers to predefined tag:
+	 *		ITEM: the dictionary item
+	 *		KEY: the key of the item
+	 *		CONTEXT: the context of the item
+	 *		LNG: the language of the sentence (must be used in a LABELS context)
+	 *		LABEL: the translation of the sentence (must be used in a LABELS context)
+	 *		FILE: the path of the file (must be used in a FILES context)
+	 *
+	 * @tag[CMD]@ iterate the tag with the CMD as context. Possible CMD:
+	 *		ITEMS: the list of items
+	 *		LABELS: the list of labels sentences
+	 *		FILES: the list of files
+	 * @tag[CMD](value)@ join the results with 'value' instead of empty string
+	 *
+	 * @obj.prop@ get the property 'prop' from the objet 'obj'. obj can be either a tag either a cmd
+	 * @tag{CMD}@ display the tag only if CMD is truthy
+	 */
+	templates: {
+		item: '{\"key\":\"@KEY@\"@context{CONTEXT}@,\"labels\":{@label[LABELS](,)@},\"files\":[@file[FILES](,)@]}',
+		context: ',\"context\":\"@CONTEXT@\"',
+		label: '\"@LNG@\":\"@LABEL@\"',
+		file: '\"@FILE@\"'
+	},
+	/* describe which files must be output and how
+	 * Tag `@tag@` are defined in templates
+	 */
+	output: [{
+		path: '.ressources/dictionary.json',
+		format: '[@item[ITEMS](,)@]'
+	}]
 };
 
 var fileConfiguration, fileObj;
