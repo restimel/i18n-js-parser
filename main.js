@@ -24,28 +24,31 @@ function main() {
 
 function runAdapter(adapter) {
     var lng, dictionaries;
-    var dictionaries = configuration.path.dictionaries.globals;
 
+    function parseFile(dictionary) {
+        adapter.parseFile(dictionary, lng);
+    }
+
+    dictionaries = configuration.path.dictionaries.globals;
     if (dictionaries) {
         if (typeof dictionaries === 'string') {
-            adapter.parseFile(dictionaries);
+            parseFile(dictionaries);
         } else if (dictionaries instanceof Array) {
-            dictionaries.forEach(function(dictionary) {
-                adapter.parseFile(dictionary);
-            });
+            dictionaries.forEach(parseFile);
         }
     }
 
     dictionaries = configuration.path.dictionaries.lng;
-
     if (dictionaries && typeof dictionaries === 'object') {
         for (lng in dictionaries) {
+            if (!dictionaries.hasOwnProperty(lng)) {
+                continue;
+            }
+
             if (typeof dictionaries[lng] === 'string') {
-                adapter.parseFile(dictionaries[lng]);
+                parseFile(dictionaries[lng]);
             } else if (dictionaries[lng] instanceof Array) {
-                dictionaries[lng].forEach(function(dictionary) {
-                    adapter.parseFile(dictionary, lng);
-                });
+                dictionaries[lng].forEach(parseFile);
             }
         }
     }

@@ -92,6 +92,9 @@ var Search = Backbone.View.extend({
 			this.fullDictionary.add(dictionaryItem, {silent: true});
 		} else {
 			item.set('files', dictionaryItem.get('files'));
+			_.each(dictionaryItem.get('labels'), function(label, lng) {
+				item.get('labels')[lng] = label;
+			});
 		}
 	},
 

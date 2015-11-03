@@ -73,11 +73,13 @@ Adapter.prototype.init = function() {
 };
 
 Adapter.prototype.parseFile = function(path, ctxLabel) {
-	var index = this.reading.push(path) -1;
+	this.reading.push(path);
 
 	fs.readFile(path, {
 		encoding: 'utf8'
 	}, function(err, data) {
+		var index = this.reading.indexOf(path);
+
 		if (err) {
 			console.error(err);
 		} else {
@@ -103,7 +105,7 @@ Adapter.prototype.writeParsed = function() {
 			if (err) {
 				console.error('File "' + configParsed + '" cannot be written.\n' + err);
 			} else {
-				console.log('File parsed written')
+				console.log('File parsed written');
 				this.eventEmitter.emit('parsed:adapter');
 			}
 		}.bind(this));
@@ -121,7 +123,9 @@ Adapter.prototype.setRules = function(rules) {
 
 	if (typeof rules === 'object') {
 		for(x in rules) {
-			this.rules[x] = rules[x];
+			if (rules.hasOwnProperty(x)) {
+				this.rules[x] = rules[x];
+			}
 		}
 	}
 };
@@ -219,7 +223,9 @@ Adapter.prototype._saveItem = function() {
 		});
 
 		for (index in this.currentItem.labels) {
-			item.addLabel(index, this.currentItem[index]);
+			if (this.currentItem.labels.hasOwnProperty(index)) {
+				item.addLabel(index, this.currentItem.labels[index]);
+			}
 		}
 	}
 };
