@@ -54,6 +54,8 @@
 						<option value="Partial">Partially translated</option>
 						<option value="Full">Fully translated</option>
 						<option value="Useless">Useless</option>
+						<option value="IsNew">New items</option>
+						<option value="IsModified">Modified</option>
 						<option value="Flagged">Flagged</option>
 						<option value="Unflagged">Unflagged</option>
 					</select>
@@ -96,6 +98,14 @@
 		<div class="col-sm-4"><%= this.getNbUseless() %></div>
 	</div>
 	<div class="row">
+		<div class="col-sm-8">Number of new items</div>
+		<div class="col-sm-4"><%= this.filteredDictionary.getNbNew() %> / <%= this.fullDictionary.getNbNew() %></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-8">Number of modified items</div>
+		<div class="col-sm-4"><%= this.filteredDictionary.getNbModified() %> / <%= this.fullDictionary.getNbModified() %></div>
+	</div>
+	<div class="row">
 		<div class="col-sm-8">Number of flagged items</div>
 		<div class="col-sm-4"><%= this.filteredDictionary.getNbFlagged() %> / <%= this.fullDictionary.getNbFlagged() %></div>
 	</div>
@@ -124,11 +134,17 @@
 						Unflag all filtered items
 					</a>
 				</li>
+				<li <%= this.filteredDictionary.getNbModified() === 0 ? ' class="disabled"' : 0 %>>
+					<a href="#" class="command-action" data-action="Reset">
+						<span class="fa fa-eraser fa-fw"></span>
+						Reset modifications
+					</a>
+				</li>
 				<li class="divider">
 				</li>
 				<li>
 					<a href="#" class="command-action" data-action="auto-filler">
-						<span class="fa fa-pencil-square-o fa-fw"></span>
+						<span class="fa fa-magic fa-fw"></span>
 						Auto-filler
 					</a>
 				</li>
@@ -183,8 +199,8 @@
 						Delete
 					</a>
 				</li>
-				<li <%= true ? 'class="disabled"' : '' %>>
-					<a href="#" class="item-action disabled" data-action="Reset">
+				<li <%= !this.dictionaryItem.isChanged() ? 'class="disabled"' : '' %>>
+					<a href="#" class="item-action" data-action="Reset">
 						<span class="fa fa-eraser fa-fw"></span>
 						Remove changes
 					</a>
@@ -202,6 +218,18 @@
 				</li>
 			</ul>
 		</div>
+
+		<% if (this.dictionaryItem.isNew()) { %>
+			<div class="tag-active new-item pull-right" title="This item has been recently added to dictionary">
+				<span class="fa fa-star"></span>
+			</div>
+		<% } %>
+
+		<% if (this.dictionaryItem.isChanged()) { %>
+			<div class="tag-active changed pull-right" title="This item has been modified">
+				<span class="fa fa-bolt"></span>
+			</div>
+		<% } %>
 
 		<% if (this.dictionaryItem.isFlagged()) { %>
 			<div class="tag-active flagged pull-right" title="This item is flagged">
@@ -249,13 +277,13 @@
 					<h4 class="modal-title">Auto-filler</h4>
 				</div>
 				<div class="modal-body">
-					<label>Fill empty fields of label 
+					<label>Fill empty fields of label
 					<select id="empty-field-Label">
 						<% configuration.get('labels').forEach(function(label) { %>
 							<option value="<%- label %>"><%- label %></option>
 						<% }) %>
 					</select></label><br>
-					<label>with 
+					<label>with
 						<select id="fill-with">
 							<option value="key-value">key value</option>
 							<% configuration.get('labels').forEach(function(label) { %>
@@ -313,7 +341,7 @@
 	</script>
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script> 
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 

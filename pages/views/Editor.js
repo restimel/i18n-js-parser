@@ -17,6 +17,10 @@ var Editor = Backbone.View.extend({
 		this.listenTo(this.filteredDictionary, 'reset', this.render);
 		this.listenTo(configuration, 'change:displayLabels', this.render);
 		this.el.addEventListener('scroll', this.renderNext.bind(this));
+
+		this.listenTo(this.fullDictionary, {
+			'reset:item': this.renderItems
+		});
 	},
 
 	render: function() {

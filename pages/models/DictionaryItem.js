@@ -27,7 +27,7 @@ var DictionaryItem = Backbone.Model.extend({
 
 		return isPartial || _.size(labels) < configuration.get('labels').length;
 	},
-	
+
 	isTranslated: function() {
 		var labels = this.get('labels');
 		var isTranslated = _.every(labels, function(label) {
@@ -36,7 +36,7 @@ var DictionaryItem = Backbone.Model.extend({
 
 		return isTranslated && _.size(labels) >= configuration.get('labels').length;
 	},
-	
+
 	isNotTranslated: function() {
 		var labels = this.get('labels');
 		var isNotTranslated = _.every(labels, function(label) {
@@ -45,13 +45,87 @@ var DictionaryItem = Backbone.Model.extend({
 
 		return isNotTranslated;
 	},
-	
+
 	isUseless: function() {
 		return _.isEmpty(this.get('files'));
 	},
 
 	isFlagged: function() {
 		return !!this.flag;
+	},
+
+	isNew: function() {
+		if (_.isUndefined(this._isNew)) {
+			this._hasRef = refDictionary.retrieve(this);
+			this._isNew = !this._hasRef;
+		}
+
+		return this._isNew;
+	},
+
+	isChanged: function() {
+		var changed;
+
+		if (this._isChanged) {
+			return true;
+		}
+
+		if (!this._hasRef && this.isNew()) {
+			this._hasRef = rawDictionary.retrieve(this);
+			if (!this._hasRef) {
+				return true;
+			}
+		}
+
+		changed = !this.compare(this._hasRef);
+
+		this._isChanged = changed;
+
+		return changed;
+	},
+
+	compare: function(model) {
+		var same = true;
+
+		if (this.has('context')) {
+			same = this.get('context') === model.get('context');
+		} else {
+			same = !model.has('context');
+		}
+
+		same = same && this.get('key') === model.get('key');
+
+		same = same
+		    && this.get('files').length === model.get('files').length
+		    && this.get('files').every(function(file)
+		{
+			return _.contains(model.get('files'), file);
+		});
+
+		same = same
+		    && _.size(this.get('labels')) === _.size(model.get('labels'))
+		    && _.every(this.get('labels'), function(label, lng)
+		{
+			return model.get('labels')[lng] === label;
+		});
+
+		return same;
+	},
+
+	restore: function(options) {
+		if (this.isChanged()) {
+			this.set('files', this._hasRef.get('files').slice(), {silent: true});
+			this.set('labels', _.clone(this._hasRef.get('labels')), {silent: true});
+
+			this._isChanged = false;
+
+			if (!options || !options.silent) {
+				this.trigger('reset:item', this);
+			}
+			return true;
+		}
+
+		return false;
 	},
 
 	toggleFlag: function(flag) {

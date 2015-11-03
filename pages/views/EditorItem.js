@@ -7,6 +7,7 @@ var EditorItem = Backbone.View.extend({
 	events: {
 	  'change .dictionary-label': 'onLabelChange',
 	  'click .item-action': 'onAction',
+	  'click .changed': 'confirmRestoreModification',
 	  'click .flagged': 'toggleFlag'
 	},
 
@@ -70,9 +71,25 @@ var EditorItem = Backbone.View.extend({
 		}
 
 		confirmation.confirm(
-			'You are about to delete item "' + this.dictionaryItem.get('key') + '"!',
+			'You are about to delete item "' + this.dictionaryItem.escape('key') + '"!',
 			message,
 			this.removeItem.bind(this)
+		);
+	},
+
+	restoreModification: function() {
+		this.dictionaryItem.restore();
+		this.render();
+	},
+
+	confirmRestoreModification: function() {
+		var message = 'Do you confirm to reset modification on item "' + _.escape(this.dictionaryItem.getName()) + '"?<br><br>'
+					+ 'All changes done on this item will be discarded.';
+
+		confirmation.confirm(
+			'You are about to reset item "' + this.dictionaryItem.escape('key') + '"!',
+			message,
+			this.restoreModification.bind(this)
 		);
 	},
 
@@ -88,7 +105,8 @@ var EditorItem = Backbone.View.extend({
 		var value = $input.val();
 
 		this.dictionaryItem.get('labels')[label] = value;
-		this.renderCallout();
+		this.render();
+		this.dictionaryItem.trigger('update:item', this.dictionaryItem);
 	},
 
 	onAction: function(evt) {
@@ -107,6 +125,7 @@ var EditorItem = Backbone.View.extend({
 		switch(action.toLowerCase()) {
 			case 'delete': this.confirmRemove(); break;
 			case 'flag': this.toggleFlag(); break;
+			case 'reset': this.confirmRestoreModification(); break;
 			default:
 				throw new Error('Action "' + action + '" is unknown');
 		}

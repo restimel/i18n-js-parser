@@ -1,5 +1,4 @@
 .tag-active {
-    color: #FF9600;
     cursor: pointer;
     padding: 5px;
     margin-right: 5px;
@@ -8,6 +7,23 @@
 
 .tag-active:hover {
     font-size: 1.2em;
+}
+
+.new-item {
+    color: #FF9600;
+    cursor: help;
+}
+
+.flagged {
+    color: #FF9600;
+}
+
+.changed {
+    color: #FF9600;
+}
+
+.new-item.tag-active:hover {
+    font-size: 1em;
 }
 
 .notification {

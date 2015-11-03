@@ -65,6 +65,12 @@ var Search = Backbone.View.extend({
 			case 'Useless':
 				isValid = item.isUseless();
 				break;
+			case 'IsNew':
+				isValid = item.isNew();
+				break;
+			case 'IsModified':
+				isValid = item.isChanged();
+				break;
 			case 'Flagged':
 				isValid = item.isFlagged();
 				break;
@@ -83,13 +89,10 @@ var Search = Backbone.View.extend({
 	},
 
 	updateItem: function(dictionaryItem) {
-		var item = this.fullDictionary.find(function(item) {
-			return item.get('key') === dictionaryItem.get('key')
-			    && item.get('context') === dictionaryItem.get('context');
-		});
+		var item = this.fullDictionary.retrieve(dictionaryItem);
 
 		if (!item) {
-			this.fullDictionary.add(dictionaryItem, {silent: true});
+			this.fullDictionary.addCopy(dictionaryItem, {silent: true});
 		} else {
 			item.set('files', dictionaryItem.get('files'));
 			_.each(dictionaryItem.get('labels'), function(label, lng) {

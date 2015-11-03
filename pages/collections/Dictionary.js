@@ -19,6 +19,10 @@ var Dictionary = Backbone.Collection.extend({
 		});
 	},
 
+	addCopy: function(model, options) {
+		return this.add(JSON.parse(JSON.stringify(model)), options);
+	},
+
 	autoFill: function(field, withField, postAction) {
 		var count = 0;
 		this.each(function(model) {
@@ -32,6 +36,47 @@ var Dictionary = Backbone.Collection.extend({
 		}
 
 		return count;
+	},
+
+	/* similar as get but can retrieve similar model */
+	retrieve: function(model) {
+		var props = {
+			key: model.get('key')
+		};
+
+		if (!props.key) {
+			return false;
+		}
+
+		if (model.has('context')) {
+			props.context = model.get('context');
+		}
+
+		return this.find(function(item) {
+			var same = model.get('key') === item.get('key');
+
+			same = same && (model.has('context')
+				 ? model.get('context') === item.get('context')
+				 : !item.has('context'));
+
+			return same;
+		});
+	},
+
+	getNbNew: function() {
+		var news = this.filter(function(model) {
+			return model.isNew();
+		});
+
+		return news.length;
+	},
+
+	getNbModified: function() {
+		var news = this.filter(function(model) {
+			return model.isChanged();
+		});
+
+		return news.length;
 	},
 
 	getNbFlagged: function() {

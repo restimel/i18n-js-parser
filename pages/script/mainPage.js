@@ -12,6 +12,7 @@ var rawDictionary = new Dictionary({
 var fullDictionary = new Dictionary({
 	url: '/data/dictionary.json'
 });
+var refDictionary = new Dictionary();
 var filteredDictionary = new Dictionary();
 
 /* Views */
@@ -40,9 +41,13 @@ editor.render();
 
 function fetchRawDictionary() {
 	rawDictionary.fetch();
+
+	/* clone fullDictionary into refDictionary */
+	refDictionary.reset(JSON.parse(JSON.stringify(fullDictionary)));
 }
 
 fullDictionary.fetch({
 	success: fetchRawDictionary,
-	error: fetchRawDictionary
+	error: fetchRawDictionary,
+	reset: true
 });
