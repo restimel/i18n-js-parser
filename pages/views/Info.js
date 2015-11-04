@@ -7,7 +7,8 @@ var Info = Backbone.View.extend({
 
 	events: {
 		'click .save': 'onSave',
-		'click .command-action': 'onAction'
+		'click .command-action': 'onAction',
+		'click .reload': 'onReload'
 	},
 
 	initialize: function(options) {
@@ -174,6 +175,10 @@ var Info = Backbone.View.extend({
 
 	onSave: function() {
 		this.fullDictionary.save();
+	},
+
+	onReload: function() {
+		controller.fetchRaw();
 	},
 
 	onAction: function(evt) {

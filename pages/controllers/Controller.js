@@ -18,8 +18,6 @@ var Controller = Backbone.View.extend({
 		});
 
 		this._isLoading = true;
-		notification.waitFor('Loading...');
-
 		this.fetchFull();
 	},
 
@@ -62,6 +60,7 @@ var Controller = Backbone.View.extend({
 	},
 
 	fetchFull: function() {
+		notification.waitFor('Loading dictionary data ...');
 		this.fullDictionary.fetch({
 			error: this.onFetchError,
 			reset: true
@@ -69,9 +68,11 @@ var Controller = Backbone.View.extend({
 	},
 
 	fetchRaw: function() {
+		notification.waitFor('Updating dictionary with new data ...');
 		this.rawDictionary.fetch({
 			error: this.onRawFetchError,
-			reset: true
+			reset: true,
+			data: 'parse=' + !this._isLoading
 		});
 	},
 
@@ -80,6 +81,6 @@ var Controller = Backbone.View.extend({
 	},
 
 	onRawFetchError: function() {
-		notification.warning('An error occurs while getting the new dictionary data.', 15000);
+		notification.error('An error occurs while getting the new dictionary data.');
 	}
 });

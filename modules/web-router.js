@@ -26,6 +26,16 @@ function server(eventEmitter, port) {
             	break;
             case '/data/rawDictionary.json':
                 path = './ressources/parsed.json';
+                if (query.parse === 'true') {
+                    eventEmitter.emit('parseFiles', function(err) {
+                        if (err) {
+                            servlet.sendHTML_(req, res, err.toString(), 500);
+                        } else {
+                            servlet.sendFile_(req, res, path);
+                        }
+                    });
+                    return;
+                }
                 break;
             case '/data/dictionary.json':
                 if (method === 'PUT') {
