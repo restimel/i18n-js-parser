@@ -12,7 +12,8 @@ var Dictionary = Backbone.Collection.extend({
 		this.sync('update', this, {
 			success: function() {
 				notification.success('Save done', 5000);
-			},
+				this.trigger('save:success', this);
+			}.bind(this),
 			error: function(err) {
 				notification.error('Save has failed: ' + err.responseText);
 			}
@@ -21,6 +22,10 @@ var Dictionary = Backbone.Collection.extend({
 
 	addCopy: function(model, options) {
 		return this.add(JSON.parse(JSON.stringify(model)), options);
+	},
+
+	copy: function(collection, options) {
+		return this.reset(JSON.parse(JSON.stringify(collection)), options);
 	},
 
 	autoFill: function(field, withField, postAction) {

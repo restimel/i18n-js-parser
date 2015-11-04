@@ -218,6 +218,12 @@ var DictionaryItem = Backbone.Model.extend({
 		DictionaryItem.computeClose(this);
 
 		return [];
+	},
+
+	clearTags: function() {
+		this._hasRef = undefined;
+		this._isNew = undefined;
+		this._isChanged = undefined;
 	}
 });
 

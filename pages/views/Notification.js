@@ -2,6 +2,7 @@ var Notification = Backbone.View.extend({
 	el: '.notification',
 
 	template: _.template($('#notificationTemplate').html()),
+	timerTpl: _.template($('#timerTemplate').html()),
 
 	events: {
 		'click .close': 'clear'
@@ -41,6 +42,11 @@ var Notification = Backbone.View.extend({
 	error: function(message, timer) {
 		this.type = 'danger';
 		this.message(message, timer);
+	},
+
+	waitFor: function(message) {
+		this.msg = message;
+		this.$el.html(this.timerTpl());
 	},
 
 	clear: function() {

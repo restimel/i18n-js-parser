@@ -21,7 +21,6 @@ var itemsInfo = new Info({
 	filteredDictionary: filteredDictionary
 });
 var search = new Search({
-	rawDictionary: rawDictionary,
 	fullDictionary: fullDictionary,
 	filteredDictionary: filteredDictionary
 });
@@ -35,19 +34,14 @@ var autoGenerator = new AutoGenerator({
 	dictionary: filteredDictionary
 });
 
+/* Controller */
+var controller = new Controller({
+	rawDictionary: rawDictionary,
+	fullDictionary: fullDictionary,
+	filteredDictionary: filteredDictionary,
+	refDictionary: refDictionary
+});
+
 search.render();
 itemsInfo.render();
 editor.render();
-
-function fetchRawDictionary() {
-	rawDictionary.fetch();
-
-	/* clone fullDictionary into refDictionary */
-	refDictionary.reset(JSON.parse(JSON.stringify(fullDictionary)));
-}
-
-fullDictionary.fetch({
-	success: fetchRawDictionary,
-	error: fetchRawDictionary,
-	reset: true
-});

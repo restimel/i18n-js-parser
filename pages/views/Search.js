@@ -12,7 +12,6 @@ var Search = Backbone.View.extend({
 	template: _.template($('#searchTemplate').html()),
 
 	initialize: function(options) {
-		this.rawDictionary = options.rawDictionary;
 		this.fullDictionary = options.fullDictionary;
 		this.filteredDictionary = options.filteredDictionary;
 
@@ -21,15 +20,12 @@ var Search = Backbone.View.extend({
 		this.fileFilter = '';
 		this.statusFilter = 'All';
 
-		this.listenTo(this.rawDictionary, {
-			'reset sync': this.onUpdateFull
-		});
-
 		this.listenTo(this.filteredDictionary, {
 			'change:values': this.filterCollection
 		});
 
 		this.listenTo(this.fullDictionary, {
+			'updated': this.filterCollection,
 			'remove:items': this.filterCollection
 		});
 	},
@@ -88,29 +84,11 @@ var Search = Backbone.View.extend({
 		return isValid;
 	},
 
-	updateItem: function(dictionaryItem) {
-		var item = this.fullDictionary.retrieve(dictionaryItem);
-
-		if (!item) {
-			this.fullDictionary.addCopy(dictionaryItem, {silent: true});
-		} else {
-			item.set('files', dictionaryItem.get('files'));
-			_.each(dictionaryItem.get('labels'), function(label, lng) {
-				item.get('labels')[lng] = label;
-			});
-		}
-	},
-
 	buildFilter: function(value) {
 		value = value.replace(/([-|{}()[\]\\\/.+?^$])/g, '\\$1')
 					 .replace(/\*/g, '.*');
 
 		return new RegExp(value, 'i');
-	},
-
-	onUpdateFull: function() {
-		this.rawDictionary.each(this.updateItem, this);
-		this.filterCollection();
 	},
 
 	onContextChange: function(evt) {
