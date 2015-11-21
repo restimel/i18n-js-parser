@@ -9,7 +9,7 @@ var configuration = {
 		dictionaries: {
 			/* files which contains only one language */
 			lng: {},
-			/* files that contains all translations (which re not specific to one language) */
+			/* files that contains all translations (which are not specific to one language) */
 			globals: []
 		},
 		/* The new raw file parsed and aggregated which is sent to Front-end */
