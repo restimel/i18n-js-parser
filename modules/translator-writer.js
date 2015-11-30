@@ -45,8 +45,13 @@ function writeDictionaries(dictionary) {
 
 function template(format, ctx) {
 	var text;
+	var searchTag = /@([^@\s\[{]*(?:\[([^\]\s]*)\](?:\([^\)]*\))?)?(?:\{([^}]*)\})?)@/g;
 
-	text = format.replace(/@([^@]*)@/g, function(p, code) {
+	if (typeof format !== 'string') {
+		return format;
+	}
+
+	text = format.replace(searchTag, function(p, code) {
 		var txt, args, tag, iterator, iteratorTag, jointure, condition, key;
 
 		function getTemplate(value, key) {
@@ -81,7 +86,7 @@ function template(format, ctx) {
 			return '@';
 		}
 
-		args = code.match(/^([^\[\{]*)(?:\[([^\]]*)\](?:\(([^\)]*)\))?)?(?:\{([^\}]*)\})?$/);
+		args = code.match(/^([^\[{]*)(?:\[([^\]]*)\](?:\(([^\)]*)\))?)?(?:\{([^}]*)\})?$/);
 		if (!args) {
 			console.warn('template "@' + code + '@" is not in valid format. It should be like "@tag[tag](separators){condition}@"');
 			return p;
@@ -118,7 +123,11 @@ function template(format, ctx) {
 			return txt;
 		}
 
-		return tag;
+		if (searchTag.test(tag)) {
+			tag = template(tag, ctx);
+		}
+
+		return tag || '';
 	});
 
 	//TODO beautifier
