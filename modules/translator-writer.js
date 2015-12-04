@@ -52,7 +52,7 @@ function template(format, ctx) {
 	}
 
 	text = format.replace(searchTag, function(p, code) {
-		var txt, args, tag, iterator, iteratorTag, jointure, condition, key;
+		var txt, args, tag, iterator, iteratorTag, jointure, condition, key, replacement;
 
 		function getTemplate(value, key) {
 			var context;
@@ -86,9 +86,9 @@ function template(format, ctx) {
 			return '@';
 		}
 
-		args = code.match(/^([^\[{]*)(?:\[([^\]]*)\](?:\(([^\)]*)\))?)?(?:\{([^}]*)\})?$/);
+		args = code.match(/^([^\[{~]*)(?:\[([^\]]*)\](?:\(([^\)]*)\))?)?(?:\{([^}]*)\})?(?:~(.*))?$/);
 		if (!args) {
-			console.warn('template "@' + code + '@" is not in valid format. It should be like "@tag[tag](separators){condition}@"');
+			console.warn('template "@' + code + '@" is not in valid format. It should be like "@tag[tag](separators){condition}~replacement@"');
 			return p;
 		}
 
@@ -97,6 +97,7 @@ function template(format, ctx) {
 		iterator = getCode(iteratorTag, ctx);
 		jointure = args[3];
 		condition = args[4];
+		replacement = getReplacement(args[5]);
 
 		if (typeof condition !== 'undefined' && !getCode(condition, ctx)) {
 			return '';
@@ -120,14 +121,14 @@ function template(format, ctx) {
 				}
 			}
 			txt = txt.join(jointure || '');
-			return txt;
+			return replacement(txt);
 		}
 
 		if (searchTag.test(tag)) {
 			tag = template(tag, ctx);
 		}
 
-		return tag || '';
+		return replacement(tag || '');
 	});
 
 	//TODO beautifier
@@ -159,6 +160,25 @@ function getCode(code, ctx) {
 	});
 
 	return value;
+}
+
+function getReplacement(key) {
+	var rule = configuration.replacements[key],
+		replacement;
+
+	if (!rule) {
+		rule = {
+			pattern: '',
+			flags: '',
+			substr: ''
+		};
+	}
+
+	replacement = new RegExp(rule.pattern, rule.flags);
+
+	return function(str) {
+		return str.replace(replacement, rule.substr);
+	};
 }
 
 

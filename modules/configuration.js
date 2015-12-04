@@ -27,6 +27,12 @@ var configuration = {
 			cleanResult: [["\\\\\"", "\""]]
 		}
 	},
+	/* This object contains all rules for replacements. A rule is an object containing 3 attributes:
+     * 		pattern: the pattern to look for (a regular expression)
+     *  	flags: the flags to apply on the RegExp
+     *  	substr: A string which replace the pattern
+	 */
+	replacements: {},
 	/* define the ouput format
 	 * @@	display a @
 	 * @tag@ refers to another tag template
@@ -83,7 +89,7 @@ if (fileConfiguration) {
 					}
 				}
 			}
-			
+
 			return value;
 		});
 	} catch(err) {

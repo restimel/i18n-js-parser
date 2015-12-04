@@ -94,6 +94,11 @@ This is a json file with the following attributes. All attributes are optional, 
 * adapter: This object contains all configuration related to adapter (interpreting the dictionary input).
     * rules: This is an object containing all rules to read the dictionary files
 
+* replacements: This object contains all rules for replacements. A rule is an object containing 3 attributes:
+    * pattern: the pattern to look for (a regular expression)
+    * flags: the flags to apply on the RegExp
+    * substr: A string which replace the pattern
+
 * templates: It contains all templates to define the ouput format. Each attribute can be use as a template replacement.
 Templates format are:
     * @@    display a @
@@ -113,6 +118,7 @@ Templates format are:
     *
     * @obj.prop@ get the property 'prop' from the objet 'obj'. obj can be either a tag either a cmd
     * @tag{CMD}@ display the tag only if CMD is truthy
+    * @tag~replacement@ display the tag and apply the replacement on it. The replacement refers to an attribute defined in "replacements"
 example:
 
 	```javascript
