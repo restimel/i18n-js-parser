@@ -1,6 +1,7 @@
 'use strict';
 
 var webServer = require('./web-server.js');
+var config = require('./configuration.js');
 
 function server(eventEmitter, port) {
 	if (typeof port !== 'number') {
@@ -25,7 +26,7 @@ function server(eventEmitter, port) {
             	path = './pages/index.html';
             	break;
             case '/data/rawDictionary.json':
-                path = './ressources/parsed.json';
+                path = config.path.parsedFile;
                 if (query.parse === 'true') {
                     eventEmitter.emit('parseFiles', function(err) {
                         if (err) {
@@ -48,7 +49,7 @@ function server(eventEmitter, port) {
                     });
                     return;
                 } else {
-                    path = './ressources/dictionary.json';
+                    path = config.path.dictionary;
                 }
                 break;
             default:

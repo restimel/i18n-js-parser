@@ -13,7 +13,9 @@ var configuration = {
 			globals: []
 		},
 		/* The new raw file parsed and aggregated which is sent to Front-end */
-		parsedFile: './ressources/parsed.json'
+		parsedFile: './ressources/parsed.json',
+		/* The internal dictionary which contains all keys */
+		dictionary: './ressources/dictionary.json'
 	},
 	adapter: {
 		rules: {

@@ -6,14 +6,22 @@ var configuration = require('./modules/configuration.js');
 var web = require('./modules/web-router.js');
 var Adapter = require('./modules/adapter.js');
 var output = require('./modules/translator-writer.js');
+var initialization = require('./modules/initialization.js');
+
+var eventEmitter;
 
 /**
  * the main entry point of the program
  * @param {String[]} argv list of arguments given my STDIN
  */
 function main() {
+    eventEmitter = new events.EventEmitter();
 
-    var eventEmitter = new events.EventEmitter();
+    eventEmitter.once('ready', startProcess);
+    initialization.init(eventEmitter);
+}
+
+function startProcess() {
     var adapter = new Adapter(eventEmitter);
 
     web.server(eventEmitter, 8000);
