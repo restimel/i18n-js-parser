@@ -91,6 +91,17 @@ This is a json file with the following attributes. All attributes are optional, 
 
     Default value is "./ressources/parsed.json".
 
+    * dictionary: refers to where the file which contains old keys and which is sent to the front-end is created and stored.
+    example:
+
+        ```javascript
+        {"path": {
+            "dictionary": "./ressources/dictionary.json"
+        }}
+        ```
+
+    Default value is "./ressources/dictionary.json".
+
 * adapter: This object contains all configuration related to adapter (interpreting the dictionary input).
     * rules: This is an object containing all rules to read the dictionary files
 

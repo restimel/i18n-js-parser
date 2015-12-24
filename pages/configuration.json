@@ -1,0 +1,6 @@
+{
+	"path": {
+		"parsedFile": "./ressources/parsed.json",
+		"dictionary": "./ressources/dictionary.json"
+	}
+}

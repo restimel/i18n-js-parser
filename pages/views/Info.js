@@ -60,11 +60,11 @@ var Info = Backbone.View.extend({
 		this.fullDictionary.trigger('remove:items', this.filteredDictionary);
 
 		if (_.isEmpty(notRemoved)) {
-			notification.success(number + ' items have been deleted.', 8000);
+			notification.success(__('%d items have been deleted.', number), 8000);
 		} else if (number === 0) {
-			notification.error('An error appeared during deletion. No items have been deleted.');
+			notification.error(__('An error appeared during deletion. No items have been deleted.'));
 		} else {
-			notification.warning(number + ' items have been deleted. But ' + notRemoved.length + ' items have not been deleted: "' + _.invoke(notRemoved, 'getName').join('", "') + '".', 20000);
+			notification.warning(__('%d items have been deleted. But %d items have not been deleted: "%s".', number, notRemoved.length, _.invoke(notRemoved, 'getName').join('", "')), 20000);
 		}
 	},
 
@@ -77,8 +77,8 @@ var Info = Backbone.View.extend({
 			return;
 		}
 
-		message = 'Do you confirm to definitevely remove ' + number + ' items?';
-		message += '<details><summary>List of items to be deleted</summary><ul><li>'
+		message = __('Do you confirm to definitevely remove %d items?', number);
+		message += '<details><summary>' + __('List of items to be deleted:') + '</summary><ul><li>'
 		message += this.filteredDictionary.map(function(item) {
 			return _.escape(item.getName());
 		}).join('</li><li>');
@@ -88,12 +88,12 @@ var Info = Backbone.View.extend({
 			return !item.isUseless();
 		})) {
 			message += '<br><span class="fa fa-warning"></span> '
-					+  'Some items are still in used.<br>'
-					+  'Removing these items will lead to a loss of translation for these files.';
+					+  __('Some items are still in used.') +'<br>'
+					+  __('Removing these items will lead to a loss of translation for these files.');
 		}
 
 		confirmation.confirm(
-			'You are about to delete ' + number + ' items!',
+			__('You are about to delete %d items!', number),
 			message,
 			this.removeItem.bind(this)
 		);
@@ -117,11 +117,11 @@ var Info = Backbone.View.extend({
 		this.fullDictionary.trigger('reset:item', list);
 
 		if (_.isEmpty(notReseted)) {
-			notification.success(number + ' items have been reseted.', 8000);
+			notification.success(__('%d items have been reseted.', number), 8000);
 		} else if (number === 0) {
-			notification.error('An error appeared during reset. No items have been reseted.');
+			notification.error(__('An error appeared during reset. No items have been reseted.'));
 		} else {
-			notification.warning(number + ' items have been reseted. But ' + notReseted.length + ' items have not been reseted: "' + _.invoke(notReseted, 'getName').join('", "') + '".', 20000);
+			notification.warning(__('%d items have been reseted. But %d items have not been reseted: "%s".', number, notReseted.length, _.invoke(notReseted, 'getName').join('", "')), 20000);
 		}
 	},
 
@@ -134,8 +134,8 @@ var Info = Backbone.View.extend({
 			return;
 		}
 
-		message = 'Do you confirm to reset ' + number + ' items?';
-		message += '<details><summary>List of items to be reseted</summary><ul><li>'
+		message = __('Do you confirm to reset %d items?', number);
+		message += '<details><summary>' + __('List of items to be reseted:') +'</summary><ul><li>'
 		message += this.filteredDictionary.filter(function(item) {
 			return item.isChanged();
 		}).map(function(item) {
@@ -145,24 +145,23 @@ var Info = Backbone.View.extend({
 		message += '<br>';
 
 		confirmation.confirm(
-			'You are about to reset ' + number + ' items!',
+			__('You are about to reset %d items!', number),
 			message,
 			this.resetItems.bind(this)
 		);
 	},
 
 	toggleAllFlags: function(flag) {
-		var message, result;
+		var message, result, status;
 
 		result = _.compact(this.filteredDictionary.toggleFlag(flag));
 
+		status = flag ? __('flagged') : __('unflagged');
 		if (result.length) {
-			message = result.length + ' items have been ';
+			message = __('%d items have been %s.', number, status);
 		} else {
-			message = 'No items have been ';
+			message = __('No items have been %s', status);
 		}
-
-		message += flag ? 'flagged.' : 'unflagged.';
 
 		notification.info(message, 5000);
 		this.render();
@@ -201,7 +200,7 @@ var Info = Backbone.View.extend({
 			case 'unflag': this.toggleAllFlags(false); break;
 			case 'auto-filler': autoGenerator.open(); break;
 			default:
-				throw new Error('Action "' + action + '" is unknown');
+				throw new Error(__('Action "%s" is unknown', action));
 		}
 	}
 });

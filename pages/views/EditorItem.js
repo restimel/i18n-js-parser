@@ -57,21 +57,21 @@ var EditorItem = Backbone.View.extend({
 			notification.success('item "' + this.dictionaryItem.getName() + '" has been deleted.', 8000);
 			this.remove();
 		} else {
-			notification.error('An error appeared during deletion of item "' + this.dictionaryItem.getName() + '".');
+			notification.error(__('An error appeared during deletion of item "%s".', this.dictionaryItem.getName()));
 		}
 	},
 
 	confirmRemove: function() {
-		var message = 'Do you confirm to definitevely remove item "' + _.escape(this.dictionaryItem.getName()) + '"?';
+		var message = __('Do you confirm to definitevely remove item "%s"?', _.escape(this.dictionaryItem.getName()));
 
 		if (!this.dictionaryItem.isUseless()) {
 			message += '<br><br><span class="fa fa-warning"></span>'
-					+  'This item is used in ' + this.dictionaryItem.get('files').length + ' files.<br>'
-					+  'Removing this item will lead to a loss of translation for these files.';
+					+  __('This item is used in %s files.', this.dictionaryItem.get('files').length) + '<br>'
+					+  __('Removing this item will lead to a loss of translation for these files.');
 		}
 
 		confirmation.confirm(
-			'You are about to delete item "' + this.dictionaryItem.escape('key') + '"!',
+			__('You are about to delete item "%s"!', this.dictionaryItem.escape('key')),
 			message,
 			this.removeItem.bind(this)
 		);
@@ -83,11 +83,11 @@ var EditorItem = Backbone.View.extend({
 	},
 
 	confirmRestoreModification: function() {
-		var message = 'Do you confirm to reset modification on item "' + _.escape(this.dictionaryItem.getName()) + '"?<br><br>'
-					+ 'All changes done on this item will be discarded.';
+		var message = __('Do you confirm to reset modification on item "%s"?<br><br>'
+					+ 'All changes done on this item will be discarded.', _.escape(this.dictionaryItem.getName()));
 
 		confirmation.confirm(
-			'You are about to reset item "' + this.dictionaryItem.escape('key') + '"!',
+			__('You are about to reset item "%s"!', this.dictionaryItem.escape('key')),
 			message,
 			this.restoreModification.bind(this)
 		);
@@ -127,7 +127,7 @@ var EditorItem = Backbone.View.extend({
 			case 'flag': this.toggleFlag(); break;
 			case 'reset': this.confirmRestoreModification(); break;
 			default:
-				throw new Error('Action "' + action + '" is unknown');
+				throw new Error(__('Action "%s" is unknown', action));
 		}
 	},
 

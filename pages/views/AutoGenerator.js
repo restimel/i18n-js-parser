@@ -33,9 +33,9 @@ var AutoGenerator = Backbone.View.extend({
 		var count = this.dictionary.autoFill(field, withfield, postAction);
 
 		if (count) {
-			notification.success(count + ' sentences have been updated.', 8000);
+			notification.success(__('%d sentences have been updated.', count), 8000);
 		} else {
-			notification.info('No sentences have been updated.', 8000);
+			notification.info(__('No sentences have been updated.'), 8000);
 		}
 
 		this.close();

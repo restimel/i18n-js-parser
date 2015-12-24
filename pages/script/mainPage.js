@@ -1,8 +1,15 @@
 'use strict';
 
+var lng = ['en', 'fr'];
+
+__.configuration({
+    locales: lng,
+    dictionary: 'ressources/dictionary.json'
+});
+
 /* configuration */
 var configuration = new Configuration({
-	labels: ['en', 'fr']
+	labels: lng
 });
 
 /* Collections */
@@ -41,6 +48,7 @@ var controller = new Controller({
 	filteredDictionary: filteredDictionary,
 	refDictionary: refDictionary
 });
+
 
 search.render();
 itemsInfo.render();
