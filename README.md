@@ -46,6 +46,11 @@ Go to the root folder of the project and run:
 
 Then in your browser enter the given URL (by default it is htttp://localhost:8000/index.html).
 
+
+If you want to use a configuration file located elsewhere add its location as argument:
+
+	node main.js ./pages/configuration.json
+
 ## Configuration
 
 You can create a configuration.json file at the root of the application to run it with a different configuration.

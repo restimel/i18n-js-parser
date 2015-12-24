@@ -70,37 +70,72 @@ var configuration = {
 	}]
 };
 
-var fileConfiguration, fileObj;
+configuration.readConfig = function(configPath) {
+	var fileConfiguration, fileObj, refPath;
 
-try {
-	fileConfiguration = fs.readFileSync('./configuration.json', {
-		encoding: 'utf8'
-	});
-} catch(e) {}
+	configPath = configPath || './configuration.json';
+	if (/\/$/.test(configPath)) {
+		configPath += 'configuration.json';
+	} else if (configPath.indexOf('/') === -1) {
+		configPath = './' + configPath;
+	}
+	refPath = configPath.replace(/\/[^\/]+$/, '/');
+	configuration.refPath = refPath;
 
-if (fileConfiguration) {
-	try{
-		fileObj = JSON.parse(fileConfiguration, function(key, value) {
-			if (key === 'rules') {
-				var k, v, r;
-				for(k in value) {
-					v = value[k];
-					if (typeof v === 'object' && v.source) {
-						r = new RegExp(v.source, v.flags);
-						value[k] = r;
+	try {
+		fileConfiguration = fs.readFileSync(configPath, {
+			encoding: 'utf8'
+		});
+	} catch(e) {}
+
+	if (fileConfiguration) {
+		try{
+			fileObj = JSON.parse(fileConfiguration, function(key, value) {
+				if (key === 'rules') {
+					var k, v, r;
+					for(k in value) {
+						v = value[k];
+						if (typeof v === 'object' && v.source) {
+							r = new RegExp(v.source, v.flags);
+							value[k] = r;
+						}
 					}
 				}
-			}
 
-			return value;
-		});
-	} catch(err) {
-		console.error('configuration.json is not a valid JSON file');
-		console.error('reason:', err.message);
-		process.exit(1);
+				return value;
+			});
+		} catch(err) {
+			console.error('configuration.json is not a valid JSON file');
+			console.error('reason:', err.message);
+			process.exit(1);
+		}
+
+		tool.extend(configuration, fileObj);
+		updatePaths();
+	}
+};
+
+function replace(str) {
+	return str.replace(/^(?!\/)/, configuration.refPath);
+}
+
+function updatePaths() {
+	var k;
+
+	configuration.path.parsedFile = replace(configuration.path.parsedFile);
+	configuration.path.dictionary = replace(configuration.path.dictionary);
+
+	configuration.path.parser.files = configuration.path.parser.files.map(replace);
+	configuration.path.parser.except = configuration.path.parser.except.map(replace);
+	configuration.path.dictionaries.globals = configuration.path.dictionaries.globals.map(replace);
+
+	for (k in configuration.path.dictionaries.lng) {
+		configuration.path.dictionaries.lng[k] = replace(configuration.path.dictionaries.lng[k]);
 	}
 
-	tool.extend(configuration, fileObj);
+	configuration.output.forEach(function(output) {
+		output.path = replace(output.path);
+	});
 }
 
 module.exports = configuration;

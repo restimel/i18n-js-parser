@@ -13,8 +13,11 @@ var eventEmitter;
 /**
  * the main entry point of the program
  * @param {String[]} argv list of arguments given my STDIN
+ *
+ * node main.js [path to configuration.js]
  */
-function main() {
+function main(argv) {
+    configuration.readConfig(argv[2]);
     eventEmitter = new events.EventEmitter();
 
     eventEmitter.once('ready', startProcess);
