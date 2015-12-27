@@ -5,6 +5,14 @@ var tool = require('./tools.js');
 
 var configuration = {
 	path: {
+		/* files to be parsed to build the dictionary
+		   "*" can be used as wildcard to match any set of characters */
+		parser: {
+			/* list of code files to parse */
+			files: [],
+			/* List of file or directory to not parse */
+			except: []
+		},
 		/* files which contains keys and translations */
 		dictionaries: {
 			/* files which contains only one language */
@@ -116,7 +124,7 @@ configuration.readConfig = function(configPath) {
 };
 
 function replace(str) {
-	return str.replace(/^(?!\/)/, configuration.refPath);
+	return str.replace(/^(?!\/)(?:\.\/)?/, configuration.refPath);
 }
 
 function updatePaths() {
@@ -126,7 +134,8 @@ function updatePaths() {
 	configuration.path.dictionary = replace(configuration.path.dictionary);
 
 	configuration.path.parser.files = configuration.path.parser.files.map(replace);
-	configuration.path.parser.except = configuration.path.parser.except.map(replace);
+	/* XXX: except match only the end part of the path so refPath should not been apply */
+	// configuration.path.parser.except = configuration.path.parser.except.map(replace);
 	configuration.path.dictionaries.globals = configuration.path.dictionaries.globals.map(replace);
 
 	for (k in configuration.path.dictionaries.lng) {

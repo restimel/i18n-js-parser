@@ -7,8 +7,11 @@ var web = require('./modules/web-router.js');
 var Adapter = require('./modules/adapter.js');
 var output = require('./modules/translator-writer.js');
 var initialization = require('./modules/initialization.js');
+var Parser = require('./modules/parser.js');
 
 var eventEmitter;
+var parser;
+var adapter;
 
 /**
  * the main entry point of the program
@@ -25,17 +28,34 @@ function main(argv) {
 }
 
 function startProcess() {
-    var adapter = new Adapter(eventEmitter);
+    parser = new Parser(eventEmitter);
+    adapter = new Adapter(eventEmitter);
 
     web.server(eventEmitter, 8000);
     output.writer(eventEmitter);
 
-    eventEmitter.addListener('parseFiles', function(callback) {
-        eventEmitter.once('parsed:adapter', callback);
-        runAdapter(adapter);
-    });
+    eventEmitter.addListener('parseFiles', parseFiles);
 
-    runAdapter(adapter);
+    parseFiles();
+}
+
+function parseFiles(callback) {
+    if (typeof callback === 'function') {
+        eventEmitter.once('parsed:adapter', callback);
+    }
+
+    if (configuration.path.parser.files.length > 0) {
+        eventEmitter.once('parsed:parser', function() {
+            runAdapter(adapter);
+        });
+        runParser(parser);
+    } else {
+        runAdapter(adapter);
+    }
+}
+
+function runParser(parser) {
+    parser.parse();
 }
 
 function runAdapter(adapter) {

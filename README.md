@@ -58,6 +58,23 @@ You can create a configuration.json file at the root of the application to run i
 This is a json file with the following attributes. All attributes are optional, default values will then be used.
 
 * path: This is an object containg all references to path files.
+	* parser: This refers to files to parse to extract key string and to fill dictionary.
+		* files: List of path to parse. It is possible to use "*" as wildcard.
+
+			```javascript
+			{"path": {"parser": {
+				"files": ["pages/index.html", "./script/*.js"]
+			}}}
+			```
+
+		* except: List of path to not parse. It is possible to use "*" as wildcard.
+
+			```javascript
+			{"path": {"parser": {
+				"except": ["README.md", "./documentation/*"]
+			}}}
+			```
+
     * dictionaries: This refers to existing dictionary. These files will be read as input.
         * lng: It stores path of dictionaries containing only one language. The attribute name must be the language key.
         example:

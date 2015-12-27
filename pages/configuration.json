@@ -1,5 +1,9 @@
 {
 	"path": {
+		"parser": {
+			"files": ["./index.html", "./*.js"],
+			"except": ["/lib/*"]
+		},
 		"parsedFile": "./ressources/parsed.json",
 		"dictionary": "./ressources/dictionary.json"
 	}
