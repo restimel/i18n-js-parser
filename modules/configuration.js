@@ -73,7 +73,7 @@ var configuration = {
 	 * Tag `@tag@` are defined in templates
 	 */
 	output: [{
-		path: '.ressources/dictionary.json',
+		path: './ressources/dictionary.json',
 		format: '[@item[ITEMS](,)@]'
 	}]
 };

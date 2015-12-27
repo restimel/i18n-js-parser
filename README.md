@@ -171,7 +171,7 @@ example:
 ```javascript
 {
     output: [{
-        path: '.ressources/dictionary.json',
+        path: './ressources/dictionary.json',
         format: '[@item[ITEMS](,)@]'
     }]
 }

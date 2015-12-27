@@ -4,7 +4,7 @@ var lng = ['en', 'fr'];
 
 __.configuration({
     locales: lng,
-    dictionary: 'ressources/dictionary.json'
+    dictionary: 'ressources/parser_dictionary.json'
 });
 
 /* configuration */
@@ -49,7 +49,12 @@ var controller = new Controller({
 	refDictionary: refDictionary
 });
 
+function render() {
+	search.render();
+	itemsInfo.render();
+	editor.render();
+}
 
-search.render();
-itemsInfo.render();
-editor.render();
+__.configuration({
+	onLocaleReady: render
+});
