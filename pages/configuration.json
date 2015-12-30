@@ -12,9 +12,9 @@
 		"keys": ["__"]
 	},
 	"templates": {
-		"item": "\"@KEY@\": {@context{CONTEXT}@ @label[LABELS](,)@}",
-		"context": "\"context\":\"@CONTEXT@\",",
-		"label": "\"@LNG@\":\"@LABEL@\""
+		"item": "\"@KEY~esc@\": {@context{CONTEXT}@ @label[LABELS](,)@}",
+		"context": "\"context\":\"@CONTEXT~esc@\",",
+		"label": "\"@LNG@\":\"@LABEL~esc@\""
 	},
 	"output": [{
 		"path": "./ressources/parser_dictionary.json",

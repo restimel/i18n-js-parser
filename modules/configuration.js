@@ -50,7 +50,13 @@ var configuration = {
      *  	flags: the flags to apply on the RegExp
      *  	substr: A string which replace the pattern
 	 */
-	replacements: {},
+	replacements: {
+		esc: {
+			pattern: "\"",
+			flags: "g",
+			substr: "\\\""
+		}
+	},
 	/* define the ouput format
 	 * @@	display a @
 	 * @tag@ refers to another tag template
@@ -73,10 +79,10 @@ var configuration = {
 	 * @tag~replacement@ display the tag and apply the replacement on it. The replacement refers to an attribute defined in "replacements"
 	 */
 	templates: {
-		item: '{\"key\":\"@KEY@\"@context{CONTEXT}@,\"labels\":{@label[LABELS](,)@},\"files\":[@file[FILES](,)@]}',
-		context: ',\"context\":\"@CONTEXT@\"',
-		label: '\"@LNG@\":\"@LABEL@\"',
-		file: '\"@FILE@\"'
+		item: '{\"key\":\"@KEY~esc@\"@context{CONTEXT}@,\"labels\":{@label[LABELS](,)@},\"files\":[@file[FILES](,)@]}',
+		context: ',\"context\":\"@CONTEXT~esc@\"',
+		label: '\"@LNG@\":\"@LABEL~esc@\"',
+		file: '\"@FILE~esc@\"'
 	},
 	/* describe which files must be output and how
 	 * Tag `@tag@` are defined in templates
