@@ -6,6 +6,7 @@ __.configuration({
     locales: lng,
     dictionary: 'ressources/parser_dictionary.json'
 });
+__.loadParser(callSprintf);
 
 /* configuration */
 var configuration = new Configuration({
