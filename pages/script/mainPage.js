@@ -6,56 +6,60 @@ __.configuration({
     locales: lng,
     dictionary: 'ressources/parser_dictionary.json'
 });
-__.loadParser(callSprintf);
 
-/* configuration */
-var configuration = new Configuration({
-	labels: lng
-});
+var configuration,
+	rawDictionary, fullDictionary, refDictionary, filteredDictionary,
+	itemsInfo, search, editor, notification, confirmation, autoGenerator,
+	controller;
 
-/* Collections */
-var rawDictionary = new Dictionary({
-	url: '/data/rawDictionary.json'
-});
-var fullDictionary = new Dictionary({
-	url: '/data/dictionary.json'
-});
-var refDictionary = new Dictionary();
-var filteredDictionary = new Dictionary();
+function ready() {
+	/* configuration */
+	configuration = new Configuration({
+		labels: lng
+	});
 
-/* Views */
-var itemsInfo = new Info({
-	fullDictionary: fullDictionary,
-	filteredDictionary: filteredDictionary
-});
-var search = new Search({
-	fullDictionary: fullDictionary,
-	filteredDictionary: filteredDictionary
-});
-var editor = new Editor({
-	filteredDictionary: filteredDictionary,
-	fullDictionary: fullDictionary,
-});
-var notification = new Notification({});
-var confirmation = new Confirm({});
-var autoGenerator = new AutoGenerator({
-	dictionary: filteredDictionary
-});
+	/* Collections */
+	rawDictionary = new Dictionary({
+		url: '/data/rawDictionary.json'
+	});
+	fullDictionary = new Dictionary({
+		url: '/data/dictionary.json'
+	});
+	refDictionary = new Dictionary();
+	filteredDictionary = new Dictionary();
 
-/* Controller */
-var controller = new Controller({
-	rawDictionary: rawDictionary,
-	fullDictionary: fullDictionary,
-	filteredDictionary: filteredDictionary,
-	refDictionary: refDictionary
-});
+	/* Views */
+	itemsInfo = new Info({
+		fullDictionary: fullDictionary,
+		filteredDictionary: filteredDictionary
+	});
+	search = new Search({
+		fullDictionary: fullDictionary,
+		filteredDictionary: filteredDictionary
+	});
+	editor = new Editor({
+		filteredDictionary: filteredDictionary,
+		fullDictionary: fullDictionary,
+	});
+	notification = new Notification({});
+	confirmation = new Confirm({});
+	autoGenerator = new AutoGenerator({
+		dictionary: filteredDictionary
+	});
 
-function render() {
+	/* Controller */
+	controller = new Controller({
+		rawDictionary: rawDictionary,
+		fullDictionary: fullDictionary,
+		filteredDictionary: filteredDictionary,
+		refDictionary: refDictionary
+	});
+
 	search.render();
 	itemsInfo.render();
 	editor.render();
 }
 
 __.configuration({
-	onLocaleReady: render
+	onLocaleReady: ready
 });
