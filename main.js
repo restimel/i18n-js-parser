@@ -13,6 +13,8 @@ var eventEmitter;
 var parser;
 var adapter;
 
+var version = '1.0.0';
+
 /**
  * the main entry point of the program
  * @param {String[]} argv list of arguments given my STDIN
@@ -20,6 +22,11 @@ var adapter;
  * node main.js [path to configuration.js]
  */
 function main(argv) {
+    if (['-v', '--version'].indexOf(argv[2]) !== -1) {
+        console.log('i18n-js-parser v' + version);
+        process.exit(0);
+    }
+
     configuration.readConfig(argv[2]);
     eventEmitter = new events.EventEmitter();
 

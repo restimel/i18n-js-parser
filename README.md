@@ -12,10 +12,13 @@ Results are dictionary files which can be loaded by your i18n library (like http
 
 i18n-js-parser's mission is to ease the management of keeping i18n dictionary files up-to-date (with latest strings, without old useless sentences and keep them all translated).
 
-## Version 0.0.8
+## Version 1.0.0
 
-Current version supports dictionaries parsing and output templating.
-It still missing code parsing to retrieve all strings that must be translated from your code files. (building dictionary)
+Current version supports
+
+* code parsing to create a dictionary
+* dictionaries parsing to helps for strings translation
+* output templating for creating dictionaries in format you want
 
 *If you want you can help me to improve it. Fork the project and pull request your change.*
 
