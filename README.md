@@ -38,6 +38,14 @@ Front-end
 
 These 2 libraries are used from CDN, you can change links (in pages/index.html) if you want to run the application locally.
 
+## Installation
+
+Clone the project from github. You can install it in your project or aside it and set a configuration file in your project to define which files to parse.
+
+Inside the i18n-js-parser, update all submodules (for translations).
+
+	git submodule update -i
+
 ## Start
 
 Go to the root folder of the project and run:
@@ -47,9 +55,9 @@ Go to the root folder of the project and run:
 Then in your browser enter the given URL (by default it is htttp://localhost:8000/index.html).
 
 
-If you want to use a configuration file located elsewhere add its location as argument:
+If you want to use a configuration file located elsewhere add its location as argument. For example, to parse the i18n-js-parser web part, you can use:
 
-	node main.js ./pages/configuration.json
+	node main.js pages/configuration.json
 
 ## Configuration
 
