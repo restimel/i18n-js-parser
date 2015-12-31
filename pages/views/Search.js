@@ -5,8 +5,7 @@ var Search = Backbone.View.extend({
 	  'input #filter-context': 'onContextChange',
 	  'input #filter-contains': 'onContainChange',
 	  'input #filter-files': 'onFileChange',
-	  'input #filter-status': 'onStatusChange',
-	  'change .dsp-lbl': 'onChangeLabelDisplay'
+	  'input #filter-status': 'onStatusChange'
 	},
 
 	template: _.template($('#searchTemplate').html()),
@@ -117,12 +116,5 @@ var Search = Backbone.View.extend({
 
 		this.statusFilter = value;
 		this.filterCollection();
-	},
-
-	onChangeLabelDisplay: function(evt) {
-		var elem = evt.currentTarget;
-		var label = $(elem).data('lng');
-
-		configuration.toggleDisplay(label, elem.checked);
 	}
 });
