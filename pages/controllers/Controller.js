@@ -47,6 +47,12 @@ var Controller = Backbone.View.extend({
 
 	addRaw: function() {
 		this.rawDictionary.each(this.updateFromRawItem, this);
+		this.fullDictionary.each(function(item) {
+			/* set useless items */
+			if (!this.rawDictionary.retrieve(item)) {
+				item.set('files', []);
+			}
+		}, this);
 		this.fullDictionary.trigger('updated', this.fullDictionary);
 	},
 
