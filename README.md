@@ -38,16 +38,13 @@ Back-end
 Front-end
 * Backbone
 * Bootstrap
+* [i18n-js-formatter](https://github.com/restimel/i18n-js-formatter)
 
-These 2 libraries are used from CDN, you can change links (in pages/index.html) if you want to run the application locally.
+Backbone and Bootstrap are used from CDN, you can change links (in pages/index.html) if you want to run the application locally.
 
 ## Installation
 
 Clone the project from github. You can install it in your project or aside it and set a configuration file in your project to define which files to parse.
-
-Inside the i18n-js-parser, update all submodules (for translations).
-
-	git submodule update -i
 
 ## Start
 
