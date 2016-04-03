@@ -1,404 +1,405 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>i18n translation parser</title>
+    <meta charset="utf-8">
+    <title>i18n translation parser</title>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="css/i18n-parser.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/i18n-parser.css">
 </head>
 <body>
-	<div class="panel-header row">
-		<div class="search col-md-6"></div>
-		<div class="search-info col-md-6">Loading ...</div>
-	</div>
-	<div class="editor">
-		<div class="editor-content"></div>
-		<div class="editor-padding"></div>
-	</div>
-	<div class="auto-generator"></div>
-	<div id="confirm-container"></div>
-	<div class="notification"></div>
+    <div class="panel-header row">
+        <div class="search col-md-6"></div>
+        <div class="search-info col-md-6">Loading ...</div>
+    </div>
+    <div class="editor">
+        <div class="editor-content"></div>
+        <div class="editor-padding"></div>
+    </div>
+    <div class="auto-generator"></div>
+    <div id="confirm-container"></div>
+    <div class="notification"></div>
 
-	<script type="text/html" id="searchTemplate">
-	<details open>
-		<summary>
-			<%= __('Filter') %>
-		</summary>
-		<div class="form-horizontal">
-			<div class="form-group">
-				<label for="filter-context" class="control-label col-sm-4"><%= __('context') %></label>
-				<div class="col-sm-8">
-					<input placeholder="*" type="text" class="form-control" id="filter-context">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="filter-contains" class="control-label col-sm-4"><%= __('contains') %></label>
-				<div class="col-sm-8">
-					<input placeholder="*" type="text" class="form-control" id="filter-contains">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="filter-files" class="control-label col-sm-4"><%= __('in files') %></label>
-				<div class="col-sm-8">
-					<input placeholder="<%- __('all files') %>" type="text" class="form-control" id="filter-files">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="filter-status" class="control-label col-sm-4"><%= __('has status') %></label>
-				<div class="col-sm-8">
-					<select class="form-control" id="filter-status">
-						<option value="All"><%= __('All') %></option>
-						<option value="Not"><%= __('Not translated') %></option>
-						<option value="Partial"><%= __('Partially translated') %></option>
-						<option value="Full"><%= __('Fully translated') %></option>
-						<option value="Useless"><%= __('Useless') %></option>
-						<option value="IsNew"><%= __('New items') %></option>
-						<option value="IsModified"><%= __('Modified') %></option>
-						<option value="Flagged"><%= __('Flagged') %></option>
-						<option value="Unflagged"><%= __('Unflagged') %></option>
-					</select>
-				</div>
-			</div>
-		</div>
-	</details>
-	</script>
+    <script type="text/html" id="searchTemplate">
+    <details open>
+        <summary>
+            <%= __('Filter') %>
+        </summary>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="filter-context" class="control-label col-sm-4"><%= __('context') %></label>
+                <div class="col-sm-8">
+                    <input placeholder="*" type="text" class="form-control" id="filter-context">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="filter-contains" class="control-label col-sm-4"><%= __('contains') %></label>
+                <div class="col-sm-8">
+                    <input placeholder="*" type="text" class="form-control" id="filter-contains">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="filter-files" class="control-label col-sm-4"><%= __('in files') %></label>
+                <div class="col-sm-8">
+                    <input placeholder="<%- __('all files') %>" type="text" class="form-control" id="filter-files">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="filter-status" class="control-label col-sm-4"><%= __('has status') %></label>
+                <div class="col-sm-8">
+                    <select class="form-control" id="filter-status">
+                        <option value="All"><%= __('All') %></option>
+                        <option value="Not"><%= __('Not translated') %></option>
+                        <option value="Partial"><%= __('Partially translated') %></option>
+                        <option value="Full"><%= __('Fully translated') %></option>
+                        <option value="Useless"><%= __('Useless') %></option>
+                        <option value="IsNew"><%= __('New items') %></option>
+                        <option value="IsModified"><%= __('Modified') %></option>
+                        <option value="Flagged"><%= __('Flagged') %></option>
+                        <option value="Unflagged"><%= __('Unflagged') %></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </details>
+    </script>
 
-	<script type="text/html" id="infoTemplate">
-	<div class="row">
-		<div class="col-sm-8"><%= __('Number of displayed items') %></div>
-		<div class="col-sm-4"><%= this.filteredDictionary.length %> / <%= this.fullDictionary.length %></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-8"><%= __('Number of partially or not translated items') %></div>
-		<div class="col-sm-4"><%= this.getNbPartial() %></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-8"><%= __('Number of useless items') %></div>
-		<div class="col-sm-4"><%= this.getNbUseless() %></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-8"><%= __('Number of new items') %></div>
-		<div class="col-sm-4"><%= this.filteredDictionary.getNbNew() %> / <%= this.fullDictionary.getNbNew() %></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-8"><%= __('Number of modified items') %></div>
-		<div class="col-sm-4"><%= this.filteredDictionary.getNbModified() %> / <%= this.fullDictionary.getNbModified() %></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-8"><%= __('Number of flagged items') %></div>
-		<div class="col-sm-4"><%= this.filteredDictionary.getNbFlagged() %> / <%= this.fullDictionary.getNbFlagged() %></div>
-	</div>
-	<div class="row">
-		<div class="command-panel col-sm-12">
-		</div>
-	</div>
-	</script>
+    <script type="text/html" id="infoTemplate">
+    <div class="row">
+        <div class="col-sm-8"><%= __('Number of displayed items') %></div>
+        <div class="col-sm-4"><%= this.filteredDictionary.length %> / <%= this.fullDictionary.length %></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8"><%= __('Number of partially or not translated items') %></div>
+        <div class="col-sm-4"><%= this.getNbPartial() %></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8"><%= __('Number of useless items') %></div>
+        <div class="col-sm-4"><%= this.getNbUseless() %></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8"><%= __('Number of new items') %></div>
+        <div class="col-sm-4"><%= this.filteredDictionary.getNbNew() %> / <%= this.fullDictionary.getNbNew() %></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8"><%= __('Number of modified items') %></div>
+        <div class="col-sm-4"><%= this.filteredDictionary.getNbModified() %> / <%= this.fullDictionary.getNbModified() %></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8"><%= __('Number of flagged items') %></div>
+        <div class="col-sm-4"><%= this.filteredDictionary.getNbFlagged() %> / <%= this.fullDictionary.getNbFlagged() %></div>
+    </div>
+    <div class="row">
+        <div class="command-panel col-sm-12">
+        </div>
+    </div>
+    </script>
 
-	<script type="text/html" id="commandsTemplate">
-		<div class="pull-left dropdown global-configuration" title="<% __('configuration') %>">
-			<button class="btn btn-default" data-toggle="dropdown">
-				<span class="fa fa-lightbulb-o"></span>
-				<span class="fa fa-angle-down"></span>
-			</button>
-			<ul class="dropdown-menu">
-				<li class="menu-item dropdown dropdown-submenu">
+    <script type="text/html" id="commandsTemplate">
+        <div class="pull-left dropdown global-configuration" title="<% __('configuration') %>">
+            <button class="btn btn-default" data-toggle="dropdown">
+                <span class="fa fa-lightbulb-o"></span>
+                <span class="fa fa-angle-down"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li class="menu-item dropdown dropdown-submenu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-globe fa-fw"></span>
-						<%= __('Language') %>
+                        <%= __('Language') %>
                     </a>
                     <ul class="dropdown-menu">
-						<% __.getLocales({key: true, name: true}).forEach(function(lng) { %>
+                        <% __.getLocales({key: true, name: true}).forEach(function(lng) { %>
                             <li class="menu-item">
                                 <a href="#" class="command-action" data-action="change-lng" data-value="<%- lng.key %>">
-                                	<span class="fa <%= __.getLocale() === lng.key ? 'fa-check ' : '' %>fa-fw"></span>
-                                	<%- lng.name %>
+                                    <span class="fa <%= __.getLocale() === lng.key ? 'fa-check ' : '' %>fa-fw"></span>
+                                    <%- lng.name %>
                                 </a>
                             </li>
                         <% }) %>
                     </ul>
-				</li>
-				<li class="menu-item dropdown dropdown-submenu">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						<span class="fa fa-tags fa-fw"></span>
-						<%= __('Display configuration') %>
-					</a>
-					<ul class="dropdown-menu">
-                    	<% __.getLocales({key: true, name: true}).forEach(function(lng) { %>
+                </li>
+                <li class="menu-item dropdown dropdown-submenu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-tags fa-fw"></span>
+                        <%= __('Display configuration') %>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <% configuration.getLocales({key: true, name: true}).forEach(function(lng) { %>
                             <li class="menu-item">
                                 <a href="#" class="command-action" data-action="display-lng" data-value="<%- lng.key %>">
-                                	<span class="fa <%= _.contains(configuration.get('displayLabels'), lng.key) ? 'fa-eye' : 'fa-eye-slash' %> fa-fw"></span>
-                                	<%- lng.name %>
+                                    <span class="fa <%= _.contains(configuration.get('displayLabels'), lng.key) ? 'fa-eye' : 'fa-eye-slash' %> fa-fw"></span>
+                                    <%- lng.name %>
                                 </a>
                             </li>
                         <% }) %>
                     </ul>
-				</li>
-			</ul>
-		</div>
-		<button class="pull-right save btn btn-primary"><span class="fa fa-save"></span><%= __('Save') %></button>
-		<div class="command-actions dropdown pull-right">
-			<button class="btn btn-default <%= this.filteredDictionary.length === 0 ? 'disabled' : '' %>" data-toggle="dropdown">
-				<span class="fa fa-cogs"></span>Actions<span class="fa fa-angle-down"></span>
-			</button>
-			<ul class="dropdown-menu">
-				<li>
-					<a href="#" class="command-action" data-action="Delete">
-						<span class="fa fa-trash-o fa-fw"></span>
-						<%= __('Delete all filtered items') %>
-					</a>
-				</li>
-				<li>
-					<a href="#" class="command-action" data-action="Flag">
-						<span class="fa fa-flag fa-fw"></span>
-						<%= __('Flag all filtered items') %>
-					</a>
-				</li>
-				<li>
-					<a href="#" class="command-action" data-action="Unflag">
-						<span class="fa fa-flag-o fa-fw"></span>
-						<%= __('Unflag all filtered items') %>
-					</a>
-				</li>
-				<li <%= this.filteredDictionary.getNbModified() === 0 ? ' class="disabled"' : 0 %>>
-					<a href="#" class="command-action" data-action="Reset">
-						<span class="fa fa-eraser fa-fw"></span>
-						<%= __('Reset modifications') %>
-					</a>
-				</li>
-				<li class="divider">
-				</li>
-				<li>
-					<a href="#" class="command-action" data-action="auto-filler">
-						<span class="fa fa-magic fa-fw"></span>
-						<%= __('Auto-filler') %>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<button class="pull-right reload btn btn-default" title="<%- __('Reload new data') %>"><span class="fa fa-refresh"></span><%= __('Reload') %></button>
-	</script>
+                </li>
+            </ul>
+        </div>
+        <button class="pull-right save btn btn-primary"><span class="fa fa-save"></span><%= __('Save') %></button>
+        <div class="command-actions dropdown pull-right">
+            <button class="btn btn-default <%= this.filteredDictionary.length === 0 ? 'disabled' : '' %>" data-toggle="dropdown">
+                <span class="fa fa-cogs"></span>Actions<span class="fa fa-angle-down"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#" class="command-action" data-action="Delete">
+                        <span class="fa fa-trash-o fa-fw"></span>
+                        <%= __('Delete all filtered items') %>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="command-action" data-action="Flag">
+                        <span class="fa fa-flag fa-fw"></span>
+                        <%= __('Flag all filtered items') %>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="command-action" data-action="Unflag">
+                        <span class="fa fa-flag-o fa-fw"></span>
+                        <%= __('Unflag all filtered items') %>
+                    </a>
+                </li>
+                <li <%= this.filteredDictionary.getNbModified() === 0 ? ' class="disabled"' : 0 %>>
+                    <a href="#" class="command-action" data-action="Reset">
+                        <span class="fa fa-eraser fa-fw"></span>
+                        <%= __('Reset modifications') %>
+                    </a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                    <a href="#" class="command-action" data-action="auto-filler">
+                        <span class="fa fa-magic fa-fw"></span>
+                        <%= __('Auto-filler') %>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <button class="pull-right reload btn btn-default" title="<%- __('Reload new data') %>"><span class="fa fa-refresh"></span><%= __('Reload') %></button>
+    </script>
 
-	<script type="text/html" id="editorItemTemplate">
-	<div class="col-sm-offset-1 col-sm-6">
-		<div class="form-horizontal">
-			<% if (this.dictionaryItem.has('context')) { %>
-				<div class="form-group">
-					<label class="control-label col-sm-2"><%= __('Context') %></label>
-					<div class="col-sm-10">
-						<%- this.dictionaryItem.get('context') %>
-					</div>
-				</div>
-			<% } %>
-			<div class="form-group">
-				<label class="control-label col-sm-2"><%= __('Key') %></label>
-				<div class="col-sm-10">
-					<%- this.dictionaryItem.get('key') %>
-				</div>
-			</div>
-			<% _.each(configuration.get('displayLabels'), function(label) { %>
-				<div class="form-group">
-					<label for="item-cid-<%- label %>" class="control-label col-sm-2"><%- label %></label>
-					<div class="col-sm-10">
-						<input
-							type="text"
-							class="form-control dictionary-label"
-							id="item-cid-<%- label %>"
-							data-lng="<%- label %>"
-							value="<%- this.dictionaryItem.get('labels')[label] %>"
-						>
-					</div>
-				</div>
-			<% }, this) %>
-		</div>
-	</div>
-	<div class="col-sm-5">
-		<br>
-		<div class="pull-right dropdown item-actions">
-			<button class="btn btn-default" data-toggle="dropdown">
-				<span class="fa fa-cog"></span>
-				<span class="fa fa-angle-down"></span>
-			</button>
-			<ul class="dropdown-menu">
-				<li>
-					<a href="#" class="item-action" data-action="Delete">
-						<span class="fa fa-trash-o fa-fw"></span>
-						<%= __('Delete') %>
-					</a>
-				</li>
-				<li <%= !this.dictionaryItem.isChanged() ? 'class="disabled"' : '' %>>
-					<a href="#" class="item-action" data-action="Reset">
-						<span class="fa fa-eraser fa-fw"></span>
-						<%= __('Remove changes') %>
-					</a>
-				</li>
-				<li>
-					<a href="#" class="item-action" data-action="Flag">
-						<% if (this.dictionaryItem.isFlagged()) { %>
-							<span class="fa fa-flag-o fa-fw"></span>
-							<%= __('Unflag it') %>
-						<% } else { %>
-							<span class="fa fa-flag fa-fw"></span>
-							<%= __('Flag it') %>
-						<% } %>
-					</a>
-				</li>
-			</ul>
-		</div>
+    <script type="text/html" id="editorItemTemplate">
+    <div class="col-sm-offset-1 col-sm-6">
+        <div class="form-horizontal">
+            <% if (this.dictionaryItem.has('context')) { %>
+                <div class="form-group">
+                    <label class="control-label col-sm-2"><%= __('Context') %></label>
+                    <div class="col-sm-10">
+                        <%- this.dictionaryItem.get('context') %>
+                    </div>
+                </div>
+            <% } %>
+            <div class="form-group">
+                <label class="control-label col-sm-2"><%= __('Key') %></label>
+                <div class="col-sm-10">
+                    <%- this.dictionaryItem.get('key') %>
+                </div>
+            </div>
+            <% _.each(configuration.get('displayLabels'), function(label) { %>
+                <div class="form-group">
+                    <label for="item-cid-<%- label %>" class="control-label col-sm-2"><%- label %></label>
+                    <div class="col-sm-10">
+                        <input
+                            type="text"
+                            class="form-control dictionary-label"
+                            id="item-cid-<%- label %>"
+                            data-lng="<%- label %>"
+                            value="<%- this.dictionaryItem.get('labels')[label] %>"
+                        >
+                    </div>
+                </div>
+            <% }, this) %>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <br>
+        <div class="pull-right dropdown item-actions">
+            <button class="btn btn-default" data-toggle="dropdown">
+                <span class="fa fa-cog"></span>
+                <span class="fa fa-angle-down"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#" class="item-action" data-action="Delete">
+                        <span class="fa fa-trash-o fa-fw"></span>
+                        <%= __('Delete') %>
+                    </a>
+                </li>
+                <li <%= !this.dictionaryItem.isChanged() ? 'class="disabled"' : '' %>>
+                    <a href="#" class="item-action" data-action="Reset">
+                        <span class="fa fa-eraser fa-fw"></span>
+                        <%= __('Remove changes') %>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="item-action" data-action="Flag">
+                        <% if (this.dictionaryItem.isFlagged()) { %>
+                            <span class="fa fa-flag-o fa-fw"></span>
+                            <%= __('Unflag it') %>
+                        <% } else { %>
+                            <span class="fa fa-flag fa-fw"></span>
+                            <%= __('Flag it') %>
+                        <% } %>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-		<% if (this.dictionaryItem.isNew()) { %>
-			<div class="tag-active new-item pull-right" title="<%- __('This item has been recently added to dictionary') %>">
-				<span class="fa fa-star"></span>
-			</div>
-		<% } %>
+        <% if (this.dictionaryItem.isNew()) { %>
+            <div class="tag-active new-item pull-right" title="<%- __('This item has been recently added to dictionary') %>">
+                <span class="fa fa-star"></span>
+            </div>
+        <% } %>
 
-		<% if (this.dictionaryItem.isChanged()) { %>
-			<div class="tag-active changed pull-right" title="<%- __('This item has been modified') %>">
-				<span class="fa fa-bolt"></span>
-			</div>
-		<% } %>
+        <% if (this.dictionaryItem.isChanged()) { %>
+            <div class="tag-active changed pull-right" title="<%- __('This item has been modified') %>">
+                <span class="fa fa-bolt"></span>
+            </div>
+        <% } %>
 
-		<% if (this.dictionaryItem.isFlagged()) { %>
-			<div class="tag-active flagged pull-right" title="<%- __('This item is flagged') %>">
-				<span class="fa fa-flag"></span>
-			</div>
-		<% } %>
+        <% if (this.dictionaryItem.isFlagged()) { %>
+            <div class="tag-active flagged pull-right" title="<%- __('This item is flagged') %>">
+                <span class="fa fa-flag"></span>
+            </div>
+        <% } %>
 
-		<details>
-			<summary><%= __('Used in %d files', this.dictionaryItem.get('files').length) %></summary>
-			<ul>
-				<% _.each(this.dictionaryItem.get('files'), function(file) { %>
-					<li><%- file %></li>
-				<% }) %>
-			</ul>
-		</details>
-		<details>
-			<% var similar = this.dictionaryItem.getClose() %>
-			<summary><%= __('%d similar sentences', similar.length) %></summary>
-			<ul>
-				<% _.each(similar, function(item) { %>
-					<li>
-						<details>
-							<summary>
-								<%- item.has('context') ? '[' + item.get('context') + '] ' : '' %><%- item.get('key')%><%= item.isUseless() ? ' <i>(' + __('no more used') + ')</i>' : '' %>
-							</summary>
-							<ul>
-							<% _.each(configuration.get('displayLabels'), function(item_lbl) { %>
-								<li><strong><%-item_lbl %></strong>: <%- item.get('labels')[item_lbl] %></li>
-							<% }) %>
-							</ul>
-						</details>
-					</li>
-				<% }) %>
-			</ul>
-		</details>
-	</div>
-	</script>
+        <details>
+            <summary><%= __('Used in %d files', this.dictionaryItem.get('files').length) %></summary>
+            <ul>
+                <% _.each(this.dictionaryItem.get('files'), function(file) { %>
+                    <li><%- file %></li>
+                <% }) %>
+            </ul>
+        </details>
+        <details>
+            <% var similar = this.dictionaryItem.getClose() %>
+            <summary><%= __('%d similar sentences', similar.length) %></summary>
+            <ul>
+                <% _.each(similar, function(item) { %>
+                    <li>
+                        <details>
+                            <summary>
+                                <%- item.has('context') ? '[' + item.get('context') + '] ' : '' %><%- item.get('key')%><%= item.isUseless() ? ' <i>(' + __('no more used') + ')</i>' : '' %>
+                            </summary>
+                            <ul>
+                            <% _.each(configuration.get('displayLabels'), function(item_lbl) { %>
+                                <li><strong><%-item_lbl %></strong>: <%- item.get('labels')[item_lbl] %></li>
+                            <% }) %>
+                            </ul>
+                        </details>
+                    </li>
+                <% }) %>
+            </ul>
+        </details>
+    </div>
+    </script>
 
-	<script type="text/html" id="autoGeneratorTemplate">
-	<div class="modal-auto-generator modal fade in">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title"><%= __('Auto-filler') %></h4>
-				</div>
-				<div class="modal-body">
-					<%= __('Fill empty fields of label') %>
-					<select id="empty-field-Label">
-						<% configuration.get('labels').forEach(function(label) { %>
-							<option value="<%- label %>"><%- label %></option>
-						<% }) %>
-					</select><br>
-					<%= __('with') %>
-					<select id="fill-with">
-						<option value="key-value"><%= __('key value') %></option>
-						<% configuration.get('labels').forEach(function(label) { %>
-							<option value="lbl-<%- label %>"><%- __('value of label "%s"', label) %></option>
-						<% }) %>
-						<% configuration.get('labels').forEach(function(label) { %>
-							<option value="same-<%- label %>"><%- __('the "%s" value of the first similar key', label) %></option>
-						<% }) %>
-					</select>
-					<br>
-					<br>
-					<%= __('And') %>
-					<select id="post-actions">
-						<option value="do-nothing"><%= __('do nothing') %></option>
-						<option value="do-flag"><%= __('flag them') %></option>
-						<option value="do-unflag"><%= __('unflag them') %></option>
-					</select>
-				</div>
-				<div class="modal-footer">
-					<button class="cancel btn btn-default" data-dismiss="modal"><%= __('Cancel') %></button>
-					<button class="run btn btn-primary"><%= __('Run') %></button>
-				</div>
-			</div>
-		</div>
-	</div>
-	</script>
+    <script type="text/html" id="autoGeneratorTemplate">
+    <div class="modal-auto-generator modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><%= __('Auto-filler') %></h4>
+                </div>
+                <div class="modal-body">
+                    <%= __('Fill empty fields of label') %>
+                    <select id="empty-field-Label">
+                        <% configuration.get('labels').forEach(function(label) { %>
+                            <option value="<%- label %>"><%- label %></option>
+                        <% }) %>
+                    </select><br>
+                    <%= __('with') %>
+                    <select id="fill-with">
+                        <option value="key-value"><%= __('key value') %></option>
+                        <% configuration.get('labels').forEach(function(label) { %>
+                            <option value="lbl-<%- label %>"><%- __('value of label "%s"', label) %></option>
+                        <% }) %>
+                        <% configuration.get('labels').forEach(function(label) { %>
+                            <option value="same-<%- label %>"><%- __('the "%s" value of the first similar key', label) %></option>
+                        <% }) %>
+                    </select>
+                    <br>
+                    <br>
+                    <%= __('And') %>
+                    <select id="post-actions">
+                        <option value="do-nothing"><%= __('do nothing') %></option>
+                        <option value="do-flag"><%= __('flag them') %></option>
+                        <option value="do-unflag"><%= __('unflag them') %></option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button class="cancel btn btn-default" data-dismiss="modal"><%= __('Cancel') %></button>
+                    <button class="run btn btn-primary"><%= __('Run') %></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </script>
 
-	<script type="text/html" id="confirmTemplate">
-	<div class="modal-confirm modal fade in">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title"><%- this.title %></h4>
-				</div>
-				<div class="modal-body">
-					<p><%= this.message %></p>
-				</div>
-				<div class="modal-footer">
-					<button class="cancel btn btn-default" data-dismiss="modal"><%= __('Cancel') %></button>
-					<button class="confirm btn btn-primary"><%= __('Confirm') %></button>
-				</div>
-			</div>
-		</div>
-	</div>
-	</script>
+    <script type="text/html" id="confirmTemplate">
+    <div class="modal-confirm modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><%- this.title %></h4>
+                </div>
+                <div class="modal-body">
+                    <p><%= this.message %></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="cancel btn btn-default" data-dismiss="modal"><%= __('Cancel') %></button>
+                    <button class="confirm btn btn-primary"><%= __('Confirm') %></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </script>
 
-	<script type="text/html" id="notificationTemplate">
-	<div class="alert alert-<%= this.type %> alert-dismissible" role="alert">
-		<button class="close">&times;</button>
-		<%- this.msg %>
-	</div>
-	</script>
+    <script type="text/html" id="notificationTemplate">
+    <div class="alert alert-<%= this.type %> alert-dismissible" role="alert">
+        <button class="close">&times;</button>
+        <%- this.msg %>
+    </div>
+    </script>
 
-	<script type="text/html" id="timerTemplate">
-	<div class="alert alert-info" role="alert">
-		<%- this.msg %>
-		<span class="fa fa-spinner fa-pulse fa-pull-right"></span>
-	</div>
-	</script>
+    <script type="text/html" id="timerTemplate">
+    <div class="alert alert-info" role="alert">
+        <%- this.msg %>
+        <span class="fa fa-spinner fa-pulse fa-pull-right"></span>
+    </div>
+    </script>
 
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/sprintf/1.0.3/sprintf.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sprintf/1.0.3/sprintf.min.js"></script>
 
-	<script>
-	var _i18n_config = {
-		alias: '__'
-	};
-	</script>
-	<script type="text/javascript" src="./lib/i18n-js-formatter.full.min.js"></script>
-	<!-- <script type="text/javascript" src="./lib/i18n-js-formatter/script/wrapperSprintf.js"></script> -->
-	<script type="text/javascript" src="./lib/Levenshtein.js"></script>
-	<script type="text/javascript" src="./models/Configuration.js"></script>
-	<script type="text/javascript" src="./models/DictionaryItem.js"></script>
-	<script type="text/javascript" src="./collections/Dictionary.js"></script>
-	<script type="text/javascript" src="./views/Search.js"></script>
-	<script type="text/javascript" src="./views/Commands.js"></script>
-	<script type="text/javascript" src="./views/Info.js"></script>
-	<script type="text/javascript" src="./views/Editor.js"></script>
-	<script type="text/javascript" src="./views/EditorItem.js"></script>
-	<script type="text/javascript" src="./views/Confirm.js"></script>
-	<script type="text/javascript" src="./views/AutoGenerator.js"></script>
-	<script type="text/javascript" src="./views/Notification.js"></script>
-	<script type="text/javascript" src="./controllers/Controller.js"></script>
-	<script type="text/javascript" src="./script/mainPage.js"></script>
+    <script>
+    var _i18n_config = {
+        alias: '__'
+    };
+    </script>
+
+    <script type="text/javascript" src="projectConfiguration.js"></script>
+    <script type="text/javascript" src="./lib/i18n-js-formatter.full.min.js"></script>
+    <script type="text/javascript" src="./lib/Levenshtein.js"></script>
+    <script type="text/javascript" src="./models/Configuration.js"></script>
+    <script type="text/javascript" src="./models/DictionaryItem.js"></script>
+    <script type="text/javascript" src="./collections/Dictionary.js"></script>
+    <script type="text/javascript" src="./views/Search.js"></script>
+    <script type="text/javascript" src="./views/Commands.js"></script>
+    <script type="text/javascript" src="./views/Info.js"></script>
+    <script type="text/javascript" src="./views/Editor.js"></script>
+    <script type="text/javascript" src="./views/EditorItem.js"></script>
+    <script type="text/javascript" src="./views/Confirm.js"></script>
+    <script type="text/javascript" src="./views/AutoGenerator.js"></script>
+    <script type="text/javascript" src="./views/Notification.js"></script>
+    <script type="text/javascript" src="./controllers/Controller.js"></script>
+    <script type="text/javascript" src="./script/mainPage.js"></script>
 </body>
 </html>

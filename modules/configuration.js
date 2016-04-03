@@ -27,6 +27,11 @@ var configuration = {
 		/* The internal dictionary which contains all keys */
 		dictionary: './ressources/dictionary.json'
 	},
+	/* configuration related to current project */
+	project: {
+		/* list all languages handled by the user project */
+		lng: ['en', 'fr']
+	},
 	/* rules to parse files and extract key strings to translate */
 	parser: {
 		/* name used to translate strings */
@@ -136,6 +141,16 @@ configuration.readConfig = function(configPath) {
 		tool.extend(configuration, fileObj);
 		updatePaths();
 	}
+};
+
+configuration.buildPage = function() {
+	var str = 'var __projectConfiguration = ';
+	var conf = configuration.project;
+
+	str += JSON.stringify(conf);
+	str += ';'
+
+	return str;
 };
 
 function replace(str) {

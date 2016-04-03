@@ -8,6 +8,9 @@
 		"rawDictionary": "./ressources/rawDictionary.json",
 		"dictionary": "./ressources/dictionary.json"
 	},
+	"project":{
+		"lng": ["en", "fr"]
+	},
 	"parser": {
 		"keys": ["__"]
 	},

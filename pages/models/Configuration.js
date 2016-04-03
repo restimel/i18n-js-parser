@@ -7,7 +7,7 @@ var Configuration = Backbone.Model.extend({
 
 	initialize: function() {
 		if (_.isEmpty(this.get('displayLabels'))) {
-			this.set('displayLabels', _.clone(this.get('labels')), {silent: true});
+			this.set('displayLabels', _.clone(this.get('lng')), {silent: true});
 		}
 		this.sortLabel();
 	},
@@ -16,12 +16,21 @@ var Configuration = Backbone.Model.extend({
 		this.set('displayLabels', this.get('displayLabels').sort());
 	},
 
+	getLocales: function() {
+		return _.map(this.get('lng'), function(key) {
+			return {
+				key: key,
+				name: key
+			};
+		}).sort();
+	},
+
 	toggleDisplay: function(label, displayed) {
 		var index;
 		var change = false;
 		var displayLabels = this.get('displayLabels');
 
-		if (!_.contains(this.get('labels'), label)) {
+		if (!_.contains(this.get('lng'), label)) {
 			throw new Error('Label ' + label + ' is not known.');
 		}
 

@@ -144,7 +144,11 @@ This is a json file with the following attributes. All attributes are optional, 
 
     Default value is "./ressources/dictionary.json".
 
-* parser: This object contains all configuration related to parser (its goal is to extract strings which must be translated)
+* project: This object contains all configurations related to the project itself
+    * lng: The list of languages which are supported by the project (dictionarry will be built according to this value).
+    By default, its value is `['en', 'fr']`
+
+* parser: This object contains all configurations related to parser (its goal is to extract strings which must be translated)
 	* keys: list of all names used to call the translation function.
 	By default, its value is `['i18n']`
 

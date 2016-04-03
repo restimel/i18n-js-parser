@@ -14,9 +14,7 @@ var configuration,
 	mainRender;
 
 /* configuration */
-configuration = new Configuration({
-	labels: __.getLocales()
-});
+configuration = new Configuration(__projectConfiguration);
 
 /* Collections */
 rawDictionary = new Dictionary({

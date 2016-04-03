@@ -52,6 +52,9 @@ function server(eventEmitter, port) {
                     path = config.path.dictionary;
                 }
                 break;
+            case '/projectConfiguration.js':
+                servlet.sendHTML_(req, res,config.buildPage(), 200);
+                return;
             default:
             	pathName = pathName.replace(/\/\.*\//g, '/');
             	path = './pages' + pathName;
