@@ -204,3 +204,18 @@ example:
     }]
 }
 ```
+
+## Workflow
+
+Here is how this tool works.
+![workflow](./doc/img/filesWorkflow.png "Files workflow")
+
+*parsedFile* is built from source code.
+
+*Adapter* will read your existing *dictionnaries* files and merge it with the parsedFile to build the *rawDictionary*.
+
+The web application (which you must run locally) reads the *dictionary* file (which is an inner file to compare modifications) and the rawDictionary. All difference from these files are considered as new changes (either new entries, updates or deprecated keys).
+
+When saving from web application, the dictionary is updated and *output* files are generated. These output files should be your dictionaries files handled by Adapter to have a full life cycle.
+
+**dictionaries** file(s) should be the one used in your project.
