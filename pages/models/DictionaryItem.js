@@ -21,26 +21,41 @@ var DictionaryItem = Backbone.Model.extend({
 
 	isPartial: function() {
 		var labels = this.get('labels');
-		var isPartial = _.some(labels, function(label) {
-			return !_.isString(label) || _.isEmpty(label);
+		var configLng = configuration.get('displayLabels');
+		var count = 0;
+		var isPartial = _.some(labels, function(label, lng) {
+			if (configLng.indexOf(lng) !== -1) {
+				count++;
+				return !_.isString(label) || _.isEmpty(label);
+			}
 		});
 
-		return isPartial || _.size(labels) < configuration.get('labels').length;
+		return isPartial || count < configLng.length;
 	},
 
 	isTranslated: function() {
 		var labels = this.get('labels');
-		var isTranslated = _.every(labels, function(label) {
-			return _.isString(label) && !_.isEmpty(label);
+		var configLng = configuration.get('displayLabels');
+		var count = 0;
+		var isTranslated = _.every(labels, function(label, lng) {
+			if (configLng.indexOf(lng) !== -1) {
+				count++;
+				return _.isString(label) && !_.isEmpty(label);
+			}
+			return true;
 		});
 
-		return isTranslated && _.size(labels) >= configuration.get('labels').length;
+		return isTranslated && count >= configLng.length;
 	},
 
 	isNotTranslated: function() {
 		var labels = this.get('labels');
-		var isNotTranslated = _.every(labels, function(label) {
-			return !_.isString(label) || _.isEmpty(label);
+		var configLng = configuration.get('displayLabels');
+		var isNotTranslated = _.every(labels, function(label, lng) {
+			if (configLng.indexOf(lng) !== -1) {
+				return !_.isString(label) || _.isEmpty(label);
+			}
+			return true;
 		});
 
 		return isNotTranslated;

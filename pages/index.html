@@ -307,17 +307,17 @@
                 <div class="modal-body">
                     <%= __('Fill empty fields of label') %>
                     <select id="empty-field-Label">
-                        <% configuration.get('labels').forEach(function(label) { %>
+                        <% configuration.get('lng').forEach(function(label) { %>
                             <option value="<%- label %>"><%- label %></option>
                         <% }) %>
                     </select><br>
                     <%= __('with') %>
                     <select id="fill-with">
                         <option value="key-value"><%= __('key value') %></option>
-                        <% configuration.get('labels').forEach(function(label) { %>
+                        <% configuration.get('lng').forEach(function(label) { %>
                             <option value="lbl-<%- label %>"><%- __('value of label "%s"', label) %></option>
                         <% }) %>
-                        <% configuration.get('labels').forEach(function(label) { %>
+                        <% configuration.get('lng').forEach(function(label) { %>
                             <option value="same-<%- label %>"><%- __('the "%s" value of the first similar key', label) %></option>
                         <% }) %>
                     </select>
