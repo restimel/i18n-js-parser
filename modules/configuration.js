@@ -111,6 +111,7 @@ configuration.readConfig = function(configPath) {
 	configuration.refPath = refPath;
 
 	try {
+		console.log('fileConfiguration %s', configPath)
 		fileConfiguration = fs.readFileSync(configPath, {
 			encoding: 'utf8'
 		});

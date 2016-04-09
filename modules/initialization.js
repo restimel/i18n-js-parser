@@ -48,6 +48,10 @@ function createFile(path, content) {
 }
 
 function checkFile(path, defaultContent) {
+	if (path[path.length - 1] === '/') {
+		return;
+	}
+
 	fs.stat(path, function(err, stat) {
 		if (err) {
 			if (err.errno === -2) {

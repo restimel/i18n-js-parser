@@ -154,6 +154,14 @@ This is a json file with the following attributes. All attributes are optional, 
 
 * adapter: This object contains all configuration related to adapter (its goal is to interprete the dictionary input).
     * rules: This is an object containing all rules to read the dictionary files
+        * newItem: The separator between 2 items
+        * getKey: The rule to retrieve the sentence key
+        * getContext: the rule to retrieve the sentence context
+        * getLabels: delimit the part where labels are defined
+        * getLabel: Retrieve the translation of the syntax. If the RegExp is Global (flag g) it retrieve also the key language
+        * getFiles: delimit the part where files associated to this sentence ar defined
+        * getFile: retrieve the files associated to this sentence (it should have flag g).
+        * cleanResult: this rule is to clean results for example to get a simple " from \". This rule is a double array. The first value of each item is the string to replace (please note that it is parsed in a RegExp), and the second is the replacement to do. E.g. [["\\\\\"", "\""]] (because the final RegExp will be /\\"/).
 
 * replacements: This object contains all rules for replacements. A rule is an object containing 3 attributes:
     * pattern: the pattern to look for (a regular expression)

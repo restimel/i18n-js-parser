@@ -16,6 +16,20 @@ exports.extend = function extend(obj1, obj2) {
 	return obj1;
 };
 
+/* Allow to loop on object keys
+ */
+exports.each = function(obj, callback, ctx) {
+	var x;
+
+	ctx = ctx || obj;
+
+	for(x in obj) {
+		if (obj.hasOwnProperty(x)) {
+			callback.call(ctx, obj[x], x, obj);
+		}
+	}
+};
+
 /* Prepare a string to be regexpify.
  * Special characters are escaped
  * All wildcards '*' are changed into '.*' */

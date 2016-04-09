@@ -13,6 +13,8 @@ var eventEmitter;
 var parser;
 var adapter;
 
+var hasParser = true;
+
 var version = '1.0.0';
 
 /**
@@ -52,11 +54,13 @@ function parseFiles(callback) {
     }
 
     if (configuration.path.parser.files.length > 0) {
+        hasParser = true;
         eventEmitter.once('parsed:parser', function() {
             runAdapter(adapter);
         });
         runParser(parser);
     } else {
+        hasParser = false;
         runAdapter(adapter);
     }
 }
@@ -66,10 +70,12 @@ function runParser(parser) {
 }
 
 function runAdapter(adapter) {
-    var lng, dictionaries;
+    var lng, dictionaries, parsed;
+
+    // adapter.setRules();
 
     function parseFile(dictionary) {
-        adapter.parseFile(dictionary, lng);
+        adapter.parseFile(dictionary, lng, parsed);
     }
 
     dictionaries = configuration.path.dictionaries.globals;
@@ -97,7 +103,8 @@ function runAdapter(adapter) {
     }
 
     dictionaries = configuration.path.parsedFile;
-    if (typeof dictionaries === 'string') {
+    if (hasParser && typeof dictionaries === 'string') {
+        parsed = true;
         parseFile(dictionaries);
     }
 
