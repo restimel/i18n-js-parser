@@ -5,7 +5,7 @@
 			"except": ["/lib/*"]
 		},
 		"parsedFile": "./ressources/parsed.json",
-		"rawDictionary": "./ressources/rawDictionary.json",
+		"rawDictionary": "./ressources/i18n_parser_dictionary.json",
 		"dictionary": "./ressources/dictionary.json"
 	},
 	"project":{
@@ -20,7 +20,7 @@
 		"label": "\"@LNG@\":\"@LABEL~esc@\""
 	},
 	"output": [{
-		"path": "./ressources/parser_dictionary.json",
+		"path": "./ressources/i18n_parser_dictionary.json",
 		"format": "{@item[ITEMS](,)@}"
 	}]
 }

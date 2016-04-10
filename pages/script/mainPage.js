@@ -3,7 +3,7 @@
 __.configuration({
 	locales: ['en', 'fr'],
 	localeName: {en: 'English', fr: 'Français'},
-    dictionary: 'ressources/parser_dictionary.json',
+    dictionary: 'ressources/i18n_parser_dictionary.json',
     storage: ['localStorage:i18nParserLanguage', 'cookie:i18nParserLanguage']
 });
 
