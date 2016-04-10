@@ -3,6 +3,7 @@
 var fs = require('fs');
 var tool = require('./tools.js');
 var configuration = require('./configuration.js');
+var logger = require('./logger.js');
 
 function clean(str) {
 	var cleanResult = configuration.adapter.rules.cleanResult;
@@ -72,7 +73,7 @@ Adapter.prototype.init = function() {
 
 Adapter.prototype.parseFile = function(path, ctxLabel, parsedFile) {
 	this.reading.push(path);
-	// console.log('parseFile %s', path)
+	logger.log('start adapting file: ' + path);
 
 	fs.readFile(path, {
 		encoding: 'utf8'
@@ -82,7 +83,7 @@ Adapter.prototype.parseFile = function(path, ctxLabel, parsedFile) {
 		if (err) {
 			console.error(err);
 		} else {
-			this._analyzeFile(data, ctxLabel, parsedFile);
+			this._analyzeFile(data, ctxLabel, parsedFile, path);
 		}
 		this.reading.splice(index, 1);
 
@@ -98,7 +99,6 @@ Adapter.prototype.writeParsed = function() {
 	var configParsed;
 
 	if (this.reading.length === 0) {
-		// console.log('Write parse File')
 		configParsed = configuration.path.rawDictionary;
 		fs.writeFile(configParsed, JSON.stringify(this.data), {
 			flags: 'w',
@@ -108,7 +108,7 @@ Adapter.prototype.writeParsed = function() {
 			if (err) {
 				console.error('File "' + configParsed + '" cannot be written.\n' + err);
 			} else {
-				console.log('File parsed written');
+				logger.log('raw file "' + configParsed + '" has been written');
 				this.eventEmitter.emit('parsed:adapter');
 			}
 		}.bind(this));
@@ -135,15 +135,16 @@ Adapter.prototype.setRules = function(rules) {
 	}
 };
 
-Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile) {
+Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile, path) {
 	var items;
 
 	if (parsedFile) {
 		items = JSON.parse(file);
+		logger.log('file "' + path + '": ' + items.length + ' items with JSON parsing');
 	} else {
 		items = file.split(this.rules.newItem);
+		logger.log('file "' + path + '": ' + items.length + ' items with separator ' + this.rules.newItem.toString());
 	}
-	// console.log('length: %s → %s', items.length, this.rules.newItem.toString())
 
 	items.forEach(function(chunk) {
 		this._newItem();
@@ -154,7 +155,7 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile) {
 			this.currentItem.key = chunk.key;
 		} else {
 			parser = chunk.match(this.rules.getKey);
-			// console.log('chunk: \n%s\nregexp: %s', chunk, this.rules.getKey)
+			logger.log('[' + path + '] key-parser result: ' + parser + ' --- getKey regExp: ' + this.rules.getKey.toString() + '\nchunk:\n' + chunk);
 
 			if (!parser || !parser[1]) {
 				return;
@@ -162,6 +163,7 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile) {
 
 			this.currentItem.key = clean(parser[1]);
 		}
+		logger.log('[' + path + '] key: '+ this.currentItem.key);
 
 		/* look for context */
 		if (parsedFile) {
@@ -169,10 +171,12 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile) {
 		} else {
 			parser = chunk.match(this.rules.getContext);
 
+			logger.log('[' + path + '][' + this.currentItem.key + '] context-parser result: ' + parser + ' --- getContext regExp: ' + this.rules.getContext.toString());
 			if (parser && parser[1]) {
 				this.currentItem.context = clean(parser[1]);
 			}
 		}
+		logger.log('[' + path + '][' + this.currentItem.key + '] context: '+ this.currentItem.context);
 
 		/* look for label(s) */
 		if (parsedFile) {
@@ -190,19 +194,13 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile) {
 				}
 			} else {
 				parser = chunk.match(this.rules.getLabels);
-				// if (this.currentItem.key === '%{.2}d%%') {
-				// 	console.log('chunk:\n%s\nregexp: %s\nresult:\n%s',chunk,this.rules.getLabels, parser)
-				// }
 
-				// console.log('ADAPATER XXX %s --- %s',this.currentItem.key,parser && parser.length)
-
+				logger.log('[' + path + '][' + this.currentItem.key + '] labels-parser result: ' + parser + ' --- getLabels regExp: ' + this.rules.getLabels.toString() + ' --- getLabel regExp: ' + this.rules.getLabel.toString());
 
 				if (parser) {
 					if (parser[1] && parser[2]) {
 						this.currentItem.addLabel(parser[1], clean(parser[2]));
 					} else if(parser[1] && this.rules.getLabel.global) {
-				// console.log('ADAPATER XXX %s --- %s',this.currentItem.key,parser && parser.length)
-						// look for each labels
 						part = parser[1];
 						while(parser = this.rules.getLabel.exec(part)) {
 							if (parser[1] && parser[2]) {
@@ -222,6 +220,7 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile) {
 			}, this);
 		} else {
 			parser = chunk.match(this.rules.getFiles);
+			logger.log('[' + path + '][' + this.currentItem.key + '] files-parser result: ' + parser + ' --- getFiles regExp: ' + this.rules.getFiles.toString() + ' --- getFile regExp: ' + this.rules.getFile.toString());
 
 			if (parser) {
 				if(parser[1] && this.rules.getFile.global) {
@@ -257,8 +256,12 @@ Adapter.prototype._saveItem = function() {
 	}, this);
 
 	if (index === -1) {
-		this.data.push(this.currentItem);
+		if (typeof this.currentItem.key !== 'undefined' && !(/^\s*$/.test(this.currentItem.key))) {
+			this.data.push(this.currentItem);
+			logger.log('Raw data: Add new item\n' + JSON.stringify(this.currentItem, null, '\t'));
+		}
 	} else {
+		logger.log('Raw data: item [' + this.currentItem.context + '][' + this.currentItem.key + '] already in store');
 		item = this.data[index];
 		this.currentItem.files.forEach(function(fileName) {
 			item.addFile(fileName);

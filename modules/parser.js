@@ -4,9 +4,24 @@ var fs = require('fs');
 var config = require('./configuration.js');
 var FileReader = require('./fileReader.js').FileReader;
 var tools = require('./tools.js');
+var logger = require('./logger.js');
 
 /* constant */
 var extractString = /(['"])((?:\\.|.)+?)\1\s*\+?\s*/g;
+
+var clean = function(data) {
+	return data.replace(/\\(.)/g, function(p, c) {
+		switch (c) {
+			case 'n': return '\n';
+			case 'r': return '\r';
+			case 't': return '\t';
+			case 'v': return '\v';
+			case 'f': return '\f';
+			case '0': return '\0';
+			default: return c;
+		}
+	});
+};
 
 function Parser(eventEmitter) {
 	this.eventEmitter = eventEmitter;
@@ -42,12 +57,12 @@ Parser.prototype.addItem = function(key, context, file) {
 	if (!item) {
 		this.countItem++;
 		item = {
-			key: key,
+			key: clean(key),
 			files: []
 		};
 
 		if (context) {
-			item.context = context;
+			item.context = clean(context);
 		}
 
 		this.dictionary.push(item);
@@ -93,6 +108,7 @@ Parser.prototype.parseFile = function(path, content) {
 	}
 
 	this.files.push(path);
+	logger.log(' parse File "' + path + '"');
 
 	while (parse = this.simpleCall.exec(content)) {
 		data = parse[1];

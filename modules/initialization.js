@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var configuration = require('./configuration.js');
+var logger = require('./logger.js');
 
 var init = {
 	eventEmitter: null,
@@ -77,5 +78,6 @@ exports.init = function(eventEmitter) {
 	checkFile(configuration.path.rawDictionary, '[]');
 	checkFile(configuration.path.dictionary, '[]');
 	checkFile(configuration.path.parsedFile, '');
+	logger.init();
 };
 

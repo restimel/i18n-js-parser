@@ -144,6 +144,19 @@ This is a json file with the following attributes. All attributes are optional, 
 
     Default value is "./ressources/dictionary.json".
 
+    * log: refers to where the log file would be written. If it is empty no logs are written.
+    Logs are many info about parsing and transforming files (adpater) matchers.
+    Logs are reset every time the tool is restarted.
+    example:
+
+        ```javascript
+        {"path": {
+            "log": "./ressources/i18n_parser.log"
+        }}
+        ```
+
+    Default value is "" (no logs).
+
 * project: This object contains all configurations related to the project itself
     * lng: The list of languages which are supported by the project (dictionarry will be built according to this value).
     By default, its value is `['en', 'fr']`

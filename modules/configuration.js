@@ -25,7 +25,9 @@ var configuration = {
 		/* The new raw file parsed and aggregated which is sent to Front-end */
 		rawDictionary: './ressources/rawDictionary.json',
 		/* The internal dictionary which contains all keys */
-		dictionary: './ressources/dictionary.json'
+		dictionary: './ressources/dictionary.json',
+		/* file to log all what happens inside parser and adapter */
+		log: ''
 	},
 	/* configuration related to current project */
 	project: {
@@ -111,7 +113,6 @@ configuration.readConfig = function(configPath) {
 	configuration.refPath = refPath;
 
 	try {
-		console.log('fileConfiguration %s', configPath)
 		fileConfiguration = fs.readFileSync(configPath, {
 			encoding: 'utf8'
 		});
@@ -164,6 +165,7 @@ function updatePaths() {
 	configuration.path.parsedFile = replace(configuration.path.parsedFile);
 	configuration.path.rawDictionary = replace(configuration.path.rawDictionary);
 	configuration.path.dictionary = replace(configuration.path.dictionary);
+	configuration.path.log = replace(configuration.path.log);
 
 	configuration.path.parser.files = configuration.path.parser.files.map(replace);
 	/* XXX: except match only the end part of the path so refPath should not been apply */

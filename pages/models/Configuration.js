@@ -1,6 +1,6 @@
 var Configuration = Backbone.Model.extend({
 	defaults: {
-		labels: [],
+		lng: [],
 		displayLabels: [],
 		similarThreshold: 0.42
 	},

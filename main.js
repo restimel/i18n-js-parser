@@ -72,8 +72,6 @@ function runParser(parser) {
 function runAdapter(adapter) {
     var lng, dictionaries, parsed;
 
-    // adapter.setRules();
-
     function parseFile(dictionary) {
         adapter.parseFile(dictionary, lng, parsed);
     }
