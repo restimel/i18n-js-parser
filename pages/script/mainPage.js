@@ -62,6 +62,47 @@ function mainRender() {
 	editor.render();
 }
 
+function encodeStr(str) {
+	if (str) {
+		str = str.replace(/[\n\r\t\v\f\b\0]/g, function(p) {
+			switch (p) {
+				case '\n': return '\\n';
+				case '\r': return '\\r';
+				case '\t': return '\\t';
+				case '\v': return '\\v';
+				case '\f': return '\\f';
+				case '\b': return '\\b';
+				case '\0': return '\\0';
+				/* How to manage \u \x ? */
+				default: return c;
+			}
+		});
+	}
+
+	return str;
+}
+
+function decodeStr(str) {
+	if (str) {
+		str = str.replace(/\\(.)/g, function(p, c) {
+			switch (c) {
+				case '\\': return '\\';
+				case 'n': return '\n';
+				case 'r': return '\r';
+				case 't': return '\t';
+				case 'v': return '\v';
+				case 'f': return '\f';
+				case 'b': return '\b';
+				case '0': return '\0';
+				/* How to manage \u \x ? */
+				default: return c;
+			}
+		});
+	}
+
+	return str;
+}
+
 function ready() {
 	if (!autoGenerator) {
 		init();
