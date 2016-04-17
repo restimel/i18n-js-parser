@@ -156,6 +156,12 @@ configuration.buildPage = function() {
 };
 
 function replace(str) {
+	if (typeof str !== 'string') {
+		if (str instanceof Array) {
+			return str.map(replace);
+		}
+		return str;
+	}
 	return str.replace(/^(?!\/)(?:\.\/)?/, configuration.refPath);
 }
 
@@ -165,7 +171,7 @@ function updatePaths() {
 	configuration.path.parsedFile = replace(configuration.path.parsedFile);
 	configuration.path.rawDictionary = replace(configuration.path.rawDictionary);
 	configuration.path.dictionary = replace(configuration.path.dictionary);
-	configuration.path.log = replace(configuration.path.log);
+	configuration.path.log = configuration.path.log && replace(configuration.path.log);
 
 	configuration.path.parser.files = configuration.path.parser.files.map(replace);
 	/* XXX: except match only the end part of the path so refPath should not been apply */

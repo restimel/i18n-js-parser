@@ -82,6 +82,41 @@ var EditorItem = Backbone.View.extend({
 		this.render();
 	},
 
+	encodeStr: function(str) {
+		str = str.repalce(/[\n\r\t\v\f\b\0]/g, function(p) {
+			switch (p) {
+				case '\n': return '\\n';
+				case '\r': return '\\r';
+				case '\t': return '\\t';
+				case '\v': return '\\v';
+				case '\f': return '\\f';
+				case '\b': return '\\b';
+				case '\0': return '\\0';
+				/* How to manage \u \x ? */
+				default: return c;
+			}
+		});
+
+		return str;
+	},
+
+	decodeStr: function(str) {
+		str = str.replace(/\\(.)/g, function(p, c) {
+			switch (c) {
+				case 'n': return '\n';
+				case 'r': return '\r';
+				case 't': return '\t';
+				case 'v': return '\v';
+				case 'f': return '\f';
+				case 'b': return '\b';
+				case '0': return '\0';
+				/* How to manage \u \x ? */
+				default: return c;
+			}
+		});
+		return str;
+	},
+
 	confirmRestoreModification: function() {
 		var message = __('Do you confirm to reset modification on item "%s"?<br><br>'
 					+ 'All changes done on this item will be discarded.', _.escape(this.dictionaryItem.getName()));
@@ -104,7 +139,7 @@ var EditorItem = Backbone.View.extend({
 		var label = $input.data('lng');
 		var value = $input.val();
 
-		this.dictionaryItem.get('labels')[label] = value;
+		this.dictionaryItem.get('labels')[label] = this.decodeStr(value);
 		this.render();
 		this.dictionaryItem.trigger('update:item', this.dictionaryItem);
 	},

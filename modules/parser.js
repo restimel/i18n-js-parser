@@ -17,7 +17,9 @@ var clean = function(data) {
 			case 't': return '\t';
 			case 'v': return '\v';
 			case 'f': return '\f';
+			case 'b': return '\b';
 			case '0': return '\0';
+			/* How to manage \u \x ? */
 			default: return c;
 		}
 	});
