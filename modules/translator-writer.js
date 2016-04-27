@@ -1,7 +1,9 @@
 'use strict';
 
 var fs = require('fs');
+var tools = require('./tools');
 var configuration = require('./configuration.js');
+var logger = require('./logger.js');
 
 function writer(eventEmitter) {
 	eventEmitter.addListener('save', saveDictionary);
@@ -27,7 +29,8 @@ function saveDictionary(dictionary, callback) {
 
 function writeDictionaries(dictionary) {
 	configuration.output.forEach(function(file) {
-		fs.writeFile(file.path, template(file.format, {ITEMS: dictionary}), {
+		logger.log('write file "' + file.path + '" with format "' + file.format + '"');
+		fs.writeFile(file.path, dataFormat(file.format, {ITEMS: dictionary}), {
 			flags: 'w',
 			defaultEncoding: 'utf8',
 			mode: parseInt('666', 8)
@@ -39,6 +42,40 @@ function writeDictionaries(dictionary) {
 			console.log('file "' + file.path + '" updated');
 		});
 	});
+}
+
+function dataFormat(format, ctx) {
+	var obj;
+
+	switch(format) {
+		case 'DICTIONARY':
+			obj = ctx.ITEMS.reduce(function(dic, item) {
+				dic[item.key] = item.labels;
+				return dic;
+			}, {});
+			break;
+		case 'DATA': // TODO: DATA_en DATA_fr ...
+			obj = {};
+			ctx.ITEMS.forEach(function(item) {
+				var key = item.key;
+				tools.each(item.labels, function(label, lng) {
+					if (!obj[lng]) {
+						obj[lng] = {};
+					}
+
+					obj[lng][key] = label;
+				});
+			});
+			break;
+		case 'DICTIONARY_LIST':
+			obj = ctx.ITEMS;
+			break;
+		// TODO PO
+		default:
+			return template(format, ctx);
+	}
+
+	return JSON.stringify(obj);
 }
 
 function template(format, ctx) {

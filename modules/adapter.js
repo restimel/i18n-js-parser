@@ -5,10 +5,10 @@ var tool = require('./tools.js');
 var configuration = require('./configuration.js');
 var logger = require('./logger.js');
 
-function clean(str) {
-	var cleanResult = configuration.adapter.rules.cleanResult;
+function clean(str, fileFormat) {
+	var cleanResult = configuration.getAdapter(fileFormat).cleanResult;
 
-	if (configuration.adapter.rules.cleanResult instanceof Array) {
+	if (cleanResult instanceof Array) {
 		cleanResult.forEach(function(cleaner) {
 			if (cleaner instanceof Array) {
 				if (typeof cleaner[0] === 'string') {
@@ -59,10 +59,9 @@ Item.prototype.isValid = function() {
  * --------------------------------
  */
 
-function Adapter(eventEmitter, rules) {
+function Adapter(eventEmitter) {
 	this.eventEmitter = eventEmitter;
 	this.init();
-	this.setRules(rules);
 }
 
 Adapter.prototype.init = function() {
@@ -71,9 +70,11 @@ Adapter.prototype.init = function() {
 	this.currentItem = new Item();
 };
 
-Adapter.prototype.parseFile = function(path, ctxLabel, parsedFile) {
+Adapter.prototype.parseFile = function(path, ctxLabel, fileFormat) {
 	this.reading.push(path);
 	logger.log('start adapting file: ' + path);
+
+	fileFormat = fileFormat || 'default_adapter';
 
 	fs.readFile(path, {
 		encoding: 'utf8'
@@ -83,7 +84,7 @@ Adapter.prototype.parseFile = function(path, ctxLabel, parsedFile) {
 		if (err) {
 			console.error(err);
 		} else {
-			this._analyzeFile(data, ctxLabel, parsedFile, path);
+			this._analyzeFile(data, ctxLabel, fileFormat, path);
 		}
 		this.reading.splice(index, 1);
 
@@ -119,31 +120,51 @@ Adapter.prototype.writeParsed = function() {
 	}
 };
 
-Adapter.prototype.rules = tool.extend({}, configuration.adapter.rules);
-
-Adapter.prototype.setRules = function(rules) {
-	var x;
-
-	if (typeof rules === 'object') {
-		for(x in rules) {
-			if (rules.hasOwnProperty(x)) {
-				this.rules[x] = rules[x];
-			}
-		}
-	} else {
-		this.rules = tool.extend({}, configuration.adapter.rules);
-	}
-};
-
-Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile, path) {
+Adapter.prototype._analyzeFile = function(file, ctxLabel, fileFormat, path) {
 	var items;
+	var isDictionary = fileFormat === 'DICTIONARY';
+	var isData = fileFormat === 'DATA';
+	var isDictionaryList = fileFormat === 'DICTIONARY_LIST';
+	var customRules;
 
-	if (parsedFile) {
+	if (isDictionaryList) {
 		items = JSON.parse(file);
-		logger.log('file "' + path + '": ' + items.length + ' items with JSON parsing');
+		logger.log('file "' + path + '": ' + items.length + ' items with JSON parsing DICTIONARY_LIST');
+	} else if (isDictionary) {
+		items = [];
+		tool.each(JSON.parse(file), function(labels, key) {
+			items.push({
+				//TODO context
+				key: key,
+				files: [],
+				labels: labels
+			});
+		});
+		logger.log('file "' + path + '": ' + items.length + ' items with JSON parsing DICTIONARY');
+		isDictionaryList = true;
+	} else if (isData) {
+		items = JSON.parse(file);
+		//TOdo a real transformation...
+		items = Object.keys(items).reduce(function(memo, dico, lng) {
+			return memo.concat(Object.keys(dico).map(function(key) {
+				var labels = {};
+				var label = dico[key];
+
+				labels[lng] = label;
+				return {
+					//TODO context
+					key: key,
+					files: [],
+					labels: labels
+				};
+			}));
+		}, []);
+		logger.log('file "' + path + '": ' + items.length + ' items with JSON parsing DATA');
+		isDictionaryList = true;
 	} else {
-		items = file.split(this.rules.newItem);
-		logger.log('file "' + path + '": ' + items.length + ' items with separator ' + this.rules.newItem.toString());
+		customRules = configuration.getAdapter(fileFormat).rules;
+		items = file.split(customRules.newItem);
+		logger.log('file "' + path + '": ' + items.length + ' items with separator ' + customRules.newItem.toString());
 	}
 
 	items.forEach(function(chunk) {
@@ -151,35 +172,35 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile, path) {
 		var parser, part;
 
 		/* look for key */
-		if (parsedFile) {
+		if (isDictionaryList) {
 			this.currentItem.key = chunk.key;
 		} else {
-			parser = chunk.match(this.rules.getKey);
-			logger.log('[' + path + '] key-parser result: ' + parser + ' --- getKey regExp: ' + this.rules.getKey.toString() + '\nchunk:\n' + chunk);
+			parser = chunk.match(customRules.getKey);
+			logger.log('[' + path + '] key-parser result: ' + parser + ' --- getKey regExp: ' + customRules.getKey.toString() + '\nchunk:\n' + chunk);
 
 			if (!parser || !parser[1]) {
 				return;
 			}
 
-			this.currentItem.key = clean(parser[1]);
+			this.currentItem.key = clean(parser[1], fileFormat);
 		}
 		logger.log('[' + path + '] key: '+ this.currentItem.key);
 
 		/* look for context */
-		if (parsedFile) {
+		if (isDictionaryList) {
 			this.currentItem.context = chunk.context;
 		} else {
-			parser = chunk.match(this.rules.getContext);
+			parser = chunk.match(customRules.getContext);
 
-			logger.log('[' + path + '][' + this.currentItem.key + '] context-parser result: ' + parser + ' --- getContext regExp: ' + this.rules.getContext.toString());
+			logger.log('[' + path + '][' + this.currentItem.key + '] context-parser result: ' + parser + ' --- getContext regExp: ' + customRules.getContext.toString());
 			if (parser && parser[1]) {
-				this.currentItem.context = clean(parser[1]);
+				this.currentItem.context = clean(parser[1], fileFormat);
 			}
 		}
 		logger.log('[' + path + '][' + this.currentItem.key + '] context: '+ this.currentItem.context);
 
 		/* look for label(s) */
-		if (parsedFile) {
+		if (isDictionaryList) {
 			if (chunk.labels) {
 				tool.each(chunk.labels, function(label, lng) {
 					this.currentItem.addLabel(lng, label);
@@ -187,51 +208,51 @@ Adapter.prototype._analyzeFile = function(file, ctxLabel, parsedFile, path) {
 			}
 		} else {
 			if (ctxLabel) {
-				parser = chunk.match(this.rules.getLabel);
+				parser = chunk.match(customRules.getLabel);
 
 				if (parser && parser[1]) {
-					this.currentItem.addLabel(ctxLabel, clean(parser[1]));
+					this.currentItem.addLabel(ctxLabel, clean(parser[1], fileFormat));
 				}
 			} else {
-				parser = chunk.match(this.rules.getLabels);
+				parser = chunk.match(customRules.getLabels);
 
-				logger.log('[' + path + '][' + this.currentItem.key + '] labels-parser result: ' + parser + ' --- getLabels regExp: ' + this.rules.getLabels.toString() + ' --- getLabel regExp: ' + this.rules.getLabel.toString());
+				logger.log('[' + path + '][' + this.currentItem.key + '] labels-parser result: ' + parser + ' --- getLabels regExp: ' + customRules.getLabels.toString() + ' --- getLabel regExp: ' + customRules.getLabel.toString());
 
 				if (parser) {
 					if (parser[1] && parser[2]) {
-						this.currentItem.addLabel(parser[1], clean(parser[2]));
-					} else if(parser[1] && this.rules.getLabel.global) {
+						this.currentItem.addLabel(parser[1], clean(parser[2], fileFormat));
+					} else if(parser[1] && customRules.getLabel.global) {
 						part = parser[1];
-						while(parser = this.rules.getLabel.exec(part)) {
+						while(parser = customRules.getLabel.exec(part)) {
 							if (parser[1] && parser[2]) {
-								this.currentItem.addLabel(parser[1], clean(parser[2]));
+								this.currentItem.addLabel(parser[1], clean(parser[2], fileFormat));
 							}
 						}
-						this.rules.getLabel.lastIndex = 0; // restore the index of the rgx
+						customRules.getLabel.lastIndex = 0; // restore the index of the rgx
 					}
 				}
 			}
 		}
 
 		/* look for file(s) */
-		if (parsedFile) {
+		if (isDictionaryList) {
 			chunk.files.forEach(function(file) {
 				this.currentItem.addFile(file);
 			}, this);
 		} else {
-			parser = chunk.match(this.rules.getFiles);
-			logger.log('[' + path + '][' + this.currentItem.key + '] files-parser result: ' + parser + ' --- getFiles regExp: ' + this.rules.getFiles.toString() + ' --- getFile regExp: ' + this.rules.getFile.toString());
+			parser = chunk.match(customRules.getFiles);
+			logger.log('[' + path + '][' + this.currentItem.key + '] files-parser result: ' + parser + ' --- getFiles regExp: ' + customRules.getFiles.toString() + ' --- getFile regExp: ' + customRules.getFile.toString());
 
 			if (parser) {
-				if(parser[1] && this.rules.getFile.global) {
+				if(parser[1] && customRules.getFile.global) {
 					// look for each file
 					part = parser[1];
-					while(parser = this.rules.getFile.exec(part)) {
+					while(parser = customRules.getFile.exec(part)) {
 						if (parser[1]) {
 							this.currentItem.addFile(clean(parser[1]));
 						}
 					}
-					this.rules.getLabel.lastIndex = 0; // restore the index of the rgx
+					customRules.getLabel.lastIndex = 0; // restore the index of the rgx
 				}
 			}
 		}

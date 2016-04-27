@@ -27,6 +27,9 @@ function server(eventEmitter, port) {
             	break;
             case '/data/rawDictionary.json':
                 path = config.path.rawDictionary;
+                if (typeof path === 'object') {
+                    path = path.path;
+                }
                 if (query.parse === 'true') {
                     eventEmitter.emit('parseFiles', function(err) {
                         if (err) {
@@ -50,6 +53,9 @@ function server(eventEmitter, port) {
                     return;
                 } else {
                     path = config.path.dictionary;
+                    if (typeof path === 'object') {
+                        path = path.path;
+                    }
                 }
                 break;
             case '/projectConfiguration.js':

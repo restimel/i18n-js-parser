@@ -40,7 +40,8 @@ var configuration = {
 		keys: ['i18n']
 	},
 	/* rules to convert file from parser to the dictionary format */
-	adapter: {
+	adapter: [{
+		name: 'default_adapter',
 		rules: {
 			newItem: /\}\s*,\s*\{/,
 			getKey: /"key"\s*:\s*"((?:[^"\\]+|\\.)+)"/,
@@ -51,7 +52,7 @@ var configuration = {
 			getFiles: /"files"\s*:\s*\[\s*((?:"(?:[^"\\]+|\\.)+"[\s,]*)+)\]/,
 			cleanResult: [["\\\\\"", "\""]]
 		}
-	},
+	}],
 	/* This object contains all rules for replacements. A rule is an object containing 3 attributes:
      * 		pattern: the pattern to look for (a regular expression)
      *  	flags: the flags to apply on the RegExp
@@ -155,10 +156,27 @@ configuration.buildPage = function() {
 	return str;
 };
 
+configuration.getAdapter = function(name) {
+	var adapter = this.adapter.find(function(rule) {
+		return rule.name === name;
+	});
+
+	if (!adapter) {
+		adapter = this.adapter.find(function(rule) {
+			return rule.name === 'default_adapter';
+		});
+	}
+
+	return adapter;
+};
+
 function replace(str) {
 	if (typeof str !== 'string') {
 		if (str instanceof Array) {
 			return str.map(replace);
+		} else
+		if (str.path) {
+			str.path = replace(str.path);
 		}
 		return str;
 	}

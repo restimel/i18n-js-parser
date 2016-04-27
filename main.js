@@ -109,10 +109,18 @@ function runParser(parser) {
 }
 
 function runAdapter(adapter) {
-    var lng, dictionaries, parsed;
+    var lng, dictionaries, format;
 
     function parseFile(dictionary) {
-        adapter.parseFile(dictionary, lng, parsed);
+        var fileFormat = format;
+        var pathDictionary = dictionary;
+
+        if (typeof pathDictionary === 'object') {
+            fileFormat = pathDictionary.format || fileFormat;
+            pathDictionary = pathDictionary.path;
+        }
+
+        adapter.parseFile(pathDictionary, lng, fileFormat);
     }
 
     dictionaries = configuration.path.dictionaries.globals;
@@ -141,7 +149,7 @@ function runAdapter(adapter) {
 
     dictionaries = configuration.path.parsedFile;
     if (hasParser && typeof dictionaries === 'string') {
-        parsed = true;
+        format = 'DICTIONARY_LIST';
         parseFile(dictionaries);
     }
 

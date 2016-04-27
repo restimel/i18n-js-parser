@@ -165,7 +165,8 @@ This is a json file with the following attributes. All attributes are optional, 
 	* keys: list of all names used to call the translation function.
 	By default, its value is `['i18n']`
 
-* adapter: This object contains all configuration related to adapter (its goal is to interprete the dictionary input).
+* adapter: This is a list of objects which contain all configuration related to adapter (its goal is to interprete the dictionary input).
+    * name: an identifier for this adapter rule
     * rules: This is an object containing all rules to read the dictionary files
         * newItem: The separator between 2 items
         * getKey: The rule to retrieve the sentence key

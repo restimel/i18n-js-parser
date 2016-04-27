@@ -77,6 +77,7 @@ Parser.prototype.addItem = function(key, context, file) {
 
 Parser.prototype.parseDone = function() {
 	var dictionary;
+	var parsedFile;
 
 	try {
 		dictionary = JSON.stringify(this.dictionary);
@@ -86,7 +87,11 @@ Parser.prototype.parseDone = function() {
 		return;
 	}
 
-	fs.writeFile(config.path.parsedFile, dictionary, {
+	parsedFile = config.path.parsedFile;
+	if (typeof parsedFile === 'object') {
+		parsedFile = parsedFile.path;
+	}
+	fs.writeFile(parsedFile, dictionary, {
 		flags: 'w',
 		defaultEncoding: 'utf8',
 		mode: parseInt('666', 8)
