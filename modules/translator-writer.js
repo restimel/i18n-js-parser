@@ -59,7 +59,6 @@ function dataFormat(format, ctx) {
 	}
 
 	presetFormat = format.substr(0, format.indexOf('['));
-	logger.log('XXXXXXXXXXX: '+presetFormat + '←' + format)
 
 	switch(presetFormat) {
 		case 'DICTIONARY':
@@ -100,10 +99,8 @@ function dataFormat(format, ctx) {
 		case 'DICTIONARY_LIST':
 			obj = ctx.ITEMS;
 			break;
-		// TODO PO
 		case 'PO':
-			console.log('TODO PO files');
-			looger.log('TODO PO files');
+			return buildPoFiles(ctx.ITEMS, getLng());
 		default:
 			return template(format, ctx);
 	}
@@ -247,6 +244,34 @@ function getReplacement(key) {
 	return function(str) {
 		return str.replace(replacement, rule.substr);
 	};
+}
+
+function buildPoFiles(items, lng) {
+	console.log('TODO PO files');
+	logger.log('TODO PO files');
+	return items.map(buildPoItems.bind(null, lng[0])).join('\n\n');
+}
+
+function buildPoItems(lng, item) {
+	var txt = [];
+
+	function createMsg(str) {
+		return '"' + str.replace(/([\\"])/g, '\\$1') + '"';
+	}
+
+	/* add files */
+	txt = txt.concat(item.files.map(function(file) {
+		return '#: ' + file;
+	}));
+
+	if (item.context) {
+		txt.push('msgctxt ' + createMsg(item.context));
+	}
+
+	txt.push('msgid ' + createMsg(item.key));
+	txt.push('msgstr ' + createMsg(item.labels[lng] || ''));
+
+	return txt.join('\n')
 }
 
 
